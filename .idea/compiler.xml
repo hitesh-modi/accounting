@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="margin-plus-ng" />
+        <module name="margin-plus-service" />
+        <module name="ngdemo" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="accounting" target="1.8" />
+      <module name="margin-plus-ng" target="1.8" />
+      <module name="margin-plus-service" target="1.8" />
+      <module name="margin-plus-vaadin" target="1.8" />
+      <module name="marginplusservice" target="1.5" />
+      <module name="ngdemo" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

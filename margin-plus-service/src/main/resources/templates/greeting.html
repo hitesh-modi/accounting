@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,700"
+	rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" />
+<!-- The main CSS file -->
+<link href="style.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script defer="defer" src="fontawesome-all.min.js"></script>
+
+<script>if (window.module) module = window.module;</script>
+
+<link rel="stylesheet" href="ngDialog.css"></link>
+<link rel="stylesheet" href="ngDialog-theme-default.css"></link>
+<!--[if lt IE 9]>
+      <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+      <![endif]-->
+</head>
+<!-- The ng-app directive tells angular that the code below should be evaluated -->
+<body ng-app="modiTradersApp">
+	<div class="mainbody" ng-controller="UserController as ctrl">
+		<div>
+		<div class="logo">
+			<img src="final-logo-cropped.png"></img>
+		</div>
+		<nav class="navbar navbar-inverse">
+			<div class="container-fluid">
+				<ul class="nav navbar-nav">
+					<li><a href="#home" tabindex="1">Home</a></li>
+					<li><a href="#createInvoice" tabindex="2">Create Invoice</a></li>
+					<li><a href="#createProduct" tabindex="3">Create Product</a></li>
+					<li><a href="#createExpense" tabindex="4">Create Expense</a></li>
+					<li><a href="#inventoryRefill" tabindex="5">Inventory Refill</a></li>
+					<li><a href="#serviceRecord" tabindex="6">Service Record</a></li>
+					<li class="dropdown">
+							<a href="#" 
+								class="dropdown-toggle" 
+								data-toggle="dropdown" 
+								role="button" 
+								aria-haspopup="true" 
+								aria-expanded="false">Reports<span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="#productReport">Product Report</a></li>
+								<li><a href="#salesReport">Sales Report</a></li>
+								<li><a href="#serviceReport">Service Reports</a></li>
+							</ul>
+					</li>
+				
+				<li><a href="#contactUs" tabindex="8">Contact</a></li>
+				</ul>
+				<a href="/logout"><button class="btn btn-danger navbar-btn">Logout</button></a>
+			</div>
+		</nav>
+	</div>
+		<div>Welcome {{userDetails.userName}} ({{userDetails.userid}})</div>
+		<div ng-view="true"></div>
+	</div>
+		
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.11/angular.js"></script>
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.11/angular-route.js"></script>
+	<script src="app.js"></script>
+	<script src="dirPagination.js"></script>
+	<script src="productController.js"></script>
+	<script src="productReportController.js"></script>
+	<script src="invoiceReportController.js"></script>
+	<script src="invoiceService.js"></script>
+	<script src="productService.js"></script>
+    <script src="commonService.js"></script>
+    <script src="expenseService.js"></script>
+	<script src="invoiceController.js"></script>
+    <script src="creditNoteController.js"></script>
+    <script src="expenseController.js"></script>
+	<script src="ngDialog.js"></script>
+
+</body>
+</html>

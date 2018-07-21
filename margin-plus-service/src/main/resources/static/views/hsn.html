@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,700"
+	rel="stylesheet" />
+<!-- The main CSS file -->
+<link href="../css/style.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
+</head>
+<body>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.9/angular.min.js"></script>
+    <script type="text/javascript">
+        var app = angular.module('HSNPopupApp', [])
+        app.controller('HSNPopupController', function ($scope, $window) {
+            $scope.hsnCodes = $window.hsnCodes;
+            $scope.selectRow = function(hsnCode) {
+            	console.log('Selected row',hsnCode);
+            	$window.opener.setSelectedHSN(hsnCode);
+            	$window.close();
+            }
+        });
+    </script>
+    
+    <div ng-app="HSNPopupApp" ng-controller="HSNPopupController">
+    
+    <table class="table table-striped">
+    	<tr>
+    		<th>Select</th>
+    		<th>HSN Code</th>
+    		<th>HSN Desc</th>
+    	</tr>
+    	<tr ng-repeat="hsnCode in hsnCodes">
+    		<td><input type="radio" name="selectedHSN" value="hsnCode" ng-model="selected.value" ng-change="selectRow({{hsnCode}})">Select</td>
+    		<td>{{hsnCode.hsnCode}}</td>
+    		<td>{{hsnCode.hsnDesc}}</td>
+    	</tr>
+    </table>
+        
+    </div>
+</body>
+</html>

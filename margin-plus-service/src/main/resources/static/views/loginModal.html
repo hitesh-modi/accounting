@@ -1,0 +1,40 @@
+<!-- Registration Modal -->
+		<div id="loginModal">
+			<div>
+
+				<!-- Modal content-->
+				<div>
+					<div>
+						<h4>Login</h4>
+					</div>
+					<div class="modal-body">
+					
+						<form name="loginForm" role="form" class="form-horizontal" ng-submit="ctrl.login()">
+							<div class="form-group">
+								<label for="userName" class="col-sm-6">User Name (Email):</label> 
+								<div class="col-sm-6">
+									<input type="text"
+									class="form-control" id="userName"
+									ng-model="ctrl.credentials.username" />
+								</div>
+								
+							</div>
+							<div class="form-group">
+								<label for="pwd" class="col-sm-6">Password:</label> 
+								<div class="col-sm-6">
+									<input type="password"
+									class="form-control" id="pwd"
+									ng-model="ctrl.credentials.password" />
+								</div>
+							</div>
+							<div>
+								<button type="submit" class="ngdialog-button">Login</button>
+							</div>
+							<div class="modal-footer">
+							</div>
+						</form>
+						
+					</div>
+				</div>
+			</div>
+		</div>

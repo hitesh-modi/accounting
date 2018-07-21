@@ -1,0 +1,63 @@
+<div ng-controller="ProductReportController as productReportController"
+	class="container">
+	<div class="container-fluid">
+		<h4>
+			Product Report
+			</h5>
+			<table class="table table-bordered well">
+				<tr>
+					<th ng-click="sort('productId')">Product Id <span
+						class="glyphicon sort-icon" ng-show="sortKey=='productId'"
+						ng-class="{'glyphicon-circle-arrow-up':reverse,'glyphicon-circle-arrow-down':!reverse}">
+					</span>
+					</th>
+					<th ng-click="sort('name')">Product Name <span
+						class="glyphicon sort-icon" ng-show="sortKey=='name'"
+						ng-class="{'glyphicon-circle-arrow-up':reverse,'glyphicon-circle-arrow-down':!reverse}"></span>
+					</th>
+					<th ng-click="sort('type')">Product Type <span
+						class="glyphicon sort-icon" ng-show="sortKey=='type'"
+						ng-class="{'glyphicon-circle-arrow-up':reverse,'glyphicon-circle-arrow-down':!reverse}"></span>
+					</th>
+					<th ng-click="sort('company')">Product Company <span
+						class="glyphicon sort-icon" ng-show="sortKey=='company'"
+						ng-class="{'glyphicon-circle-arrow-up':reverse,'glyphicon-circle-arrow-down':!reverse}"></span>
+					</th>
+					<th ng-click="sort('hsnCode')">HSN/SAC Code<span
+						class="glyphicon sort-icon" ng-show="sortKey=='hsnCode'"
+						ng-class="{'glyphicon-circle-arrow-up':reverse,'glyphicon-circle-arrow-down':!reverse}"></span>
+					</th>
+					<th ng-click="sort('accountingCodeDesc')">Desc<span
+						class="glyphicon sort-icon" ng-show="sortKey=='accountingCodeDesc'"
+						ng-class="{'glyphicon-circle-arrow-up':reverse,'glyphicon-circle-arrow-down':!reverse}"></span>
+					</th>
+					<th ng-click="sort('taxRate')">Tax Rate<span
+						class="glyphicon sort-icon" ng-show="sortKey=='taxRate'"
+						ng-class="{'glyphicon-circle-arrow-up':reverse,'glyphicon-circle-arrow-down':!reverse}"></span>
+					</th>
+					<th ng-click="sort('good')">Goods/Service<span
+						class="glyphicon sort-icon" ng-show="sortKey=='good'"
+						ng-class="{'glyphicon-circle-arrow-up':reverse,'glyphicon-circle-arrow-down':!reverse}"></span>
+					</th>
+					<th>Action
+					</th>
+				</tr>
+				<tr
+					dir-paginate="product in productReportController.products | orderBy:sortKey:reverse | itemsPerPage: 10">
+					<td>{{product.productId}}</td>
+					<td>{{product.type}}</td>
+					<td>{{product.name}}</td>
+					<td>{{product.company}}</td>
+					<td>{{product.hsnCode}}</td>
+					<td>{{product.accountingCodeDesc}}</td>
+					<td>{{product.taxRate}}</td>
+					<td><span ng-show="product.good==true">Good</span><span ng-show="product.good==false">Service</span></td>
+					<td><input type="button" value="Edit"
+						class="btn btn-sm btn-success"
+						ng-click="editProduct(product.productId)"></td>
+				</tr>
+			</table>
+			<dir-pagination-controls max-size="10" direction-links="true"
+				boundary-links="true"> </dir-pagination-controls>
+	</div>
+</div>

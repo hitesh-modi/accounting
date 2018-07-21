@@ -1,0 +1,56 @@
+<div  ng-controller="ExpenseController as ctrl">
+
+    <div class="container-fluid autohide" ng-show="ctrl.savedExpenseId > 0" style="max-width: 600px;">
+        <div class="alert alert-success">
+            <strong>Success!</strong> Expense created successfully!!
+        </div>
+    </div>
+    <div class="container-fluid autohide" ng-show="ctrl.savedExpenseId == -1" style="max-width: 600px;">
+        <div class="alert alert-danger autohide">
+            <strong>Error!</strong> Error while creating expense. Please try again!!
+        </div>
+    </div>
+    <div class="container-fluid" style="max-width: 600px;">
+        <form class="well form-horizontal" ng-submit="ctrl.saveExpense()">
+            <div class="form-group">
+                <div class="control-label col-sm-6" for="expenseType">Expense Type</div>
+                <div class="col-sm-6">
+                    <select class="form-control input-sm" ng-model="ctrl.expense.expenseType"
+                            name="state" class="form-control input-sm" ng-required="true">
+
+                        <option
+                                ng-repeat="expenseType in ctrl.expenseTypes track by expenseType.code"
+                                ng-value="expenseType.code">{{expenseType.type}}</option>
+
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="control-label col-sm-6" for="expenseDate">Expense Date</div>
+                <div class="col-sm-6">
+                    <input class="form-control input-sm" type="date" ng-model="ctrl.expense.expenseDate" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="control-label col-sm-6" for="expenseAmount">Expense Amount</div>
+                <div class="col-sm-6">
+                    <input class="form-control input-sm" type="text" ng-model="ctrl.expense.expenseAmount" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="control-label col-sm-6" for="expenseComment">Comment</div>
+                <div class="col-sm-6">
+                    <textarea class="form-control input-sm" ng-model="ctrl.expense.expenseComment" ></textarea>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-success">Submit</button>
+
+        </form>
+
+    </div>
+
+</div>

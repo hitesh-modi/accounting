@@ -1,0 +1,34 @@
+
+<div>
+
+	<!-- Modal content-->
+	<div>
+		<div>
+			<h4>Receive Payment</h4>
+		</div>
+		<div class="modal-body">
+
+			<form class="form-horizontal">
+				<div class="form-group">
+					<label for="balanceAmount" class="col-sm-6">Balance Amount</label>
+					<div class="col-sm-6">
+						<input type="text" ng-disabled="true" class="form-control" id="balanceAmount"
+							ng-model="ngDialogData.invoice.balanceAmount" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="receivedAmount" class="col-sm-6">Received Amount</label>
+					<div class="col-sm-6">
+						<input type="text" class="form-control" id="receivedAmount"
+							ng-model="receivedAmount" />
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<button type="button" class="btn btn-success" ng-click="receivePayment(ngDialogData.invoice.invoiceId, receivedAmount)">Receive</button>
+				</div>
+			</form>
+
+		</div>
+	</div>
+</div>

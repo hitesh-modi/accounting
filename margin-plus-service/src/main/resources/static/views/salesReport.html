@@ -1,0 +1,72 @@
+<div ng-controller="InvoiceReportController as ctrl"
+	ng-init="getInvoiceData(true, null, null)">
+	<div class="container">
+		<h2>Invoice Report (Last 30 Days)</h2>
+
+		<form class="form-inline well">
+				<div class="form-group">
+					<label for="fromDate">From Date</label> 
+					<input type="date" class="form-control"
+						id="fromDate" ng-model="fromDate"/>
+				</div>
+				<div class="form-group">
+					<label for="toDate">To Date</label>
+					<input type="date" class="form-control"
+						id="toDate" ng-model="toDate"/>
+				</div>
+				<button type="button" class="btn btn-primary btn-sm" ng-click="getInvoiceData(false, fromDate, toDate)">
+						<span class="glyphicon glyphicon-search"></span> Search
+				</button>
+				
+		</form>
+
+		<table class="table table-bordered well">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th ng-click="sort('customerName')">Customer Name <span
+							class="glyphicon sort-icon" ng-show="sortKey=='customerName'"
+							ng-class="{'glyphicon-circle-arrow-up':reverse,'glyphicon-circle-arrow-down':!reverse}"></span></th>
+					<th ng-click="sort('consigneeName')">Consignee Name <span
+							class="glyphicon sort-icon" ng-show="sortKey=='consigneeName'"
+							ng-class="{'glyphicon-circle-arrow-up':reverse,'glyphicon-circle-arrow-down':!reverse}"></span></th>
+					<th ng-click="sort('invoiceAmount')">Invoice Amount <span
+							class="glyphicon sort-icon" ng-show="sortKey=='invoiceAmount'"
+							ng-class="{'glyphicon-circle-arrow-up':reverse,'glyphicon-circle-arrow-down':!reverse}"></span></th>
+					<th ng-click="sort('balanceAmount')">Balance Amount <span
+							class="glyphicon sort-icon" ng-show="sortKey=='balanceAmount'"
+							ng-class="{'glyphicon-circle-arrow-up':reverse,'glyphicon-circle-arrow-down':!reverse}"></span></th>
+					<th ng-click="sort('invoiceDate')">Invoice Date <span
+							class="glyphicon sort-icon" ng-show="sortKey=='balanceAmount'"
+							ng-class="{'glyphicon-circle-arrow-up':reverse,'glyphicon-circle-arrow-down':!reverse}"></span></th>
+					<th ng-click="sort('invoiceDueDate')">Due Date <span
+							class="glyphicon sort-icon" ng-show="sortKey=='invoiceDueDate'"
+							ng-class="{'glyphicon-circle-arrow-up':reverse,'glyphicon-circle-arrow-down':!reverse}"></span></th>
+					<th>Actions</th>
+                    <!--<th>Credit Note</th>
+                    <th>Revise Invoice</th>
+					<th>Print</th>-->
+				</tr>
+			</thead>
+			<tbody>
+				<tr dir-paginate="invoice in ctrl.invoices | orderBy:sortKey:reverse | itemsPerPage: 10 track by invoice.invoiceId">
+					<td><a ng-click="getInvoice(invoice.invoiceId)">{{invoice.invoiceNumber}}</a></td>
+					<td>{{invoice.customerName}}</td>
+					<td>{{invoice.consigneeName}}</td>
+					<td>{{invoice.invoiceAmount}}</td>
+					<td>{{invoice.balanceAmount}}</td>
+					<td>{{invoice.invoiceDate}}</td>
+					<td>{{invoice.invoiceDueDate}}</td>
+                    <td>
+                        <a style="color: black;" ng-click="printInvoice(invoice.invoiceId)"><span class="glyphicon glyphicon-print" aria-hidden="true">&nbsp;</span>Print</a><br/>
+                        <a style="color: black;" ng-click="receivePaymentDialog(invoice)"><span class="glyphicon glyphicon-arrow-down" aria-hidden="true">&nbsp;</span>Receive Payment</a><br/>
+                        <a style="color: black;" ng-click="openCreditNote(invoice.invoiceId)"><span class="glyphicon glyphicon-export" aria-hidden="true">&nbsp;</span>Credit Note</a><br/>
+                        <a style="color: black;" ng-click="reviseInvoice(invoice)"><span class="glyphicon glyphicon-edit" aria-hidden="true">&nbsp;</span>Revise Invoice</a>
+                    </td>
+				</tr>
+			</tbody>
+		</table>
+		<dir-pagination-controls max-size="10" direction-links="true"
+								 boundary-links="true"> </dir-pagination-controls>
+	</div>
+</div>

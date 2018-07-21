@@ -1,0 +1,129 @@
+<!-- Registration Modal -->
+		<div id="registrationModal">
+			<div>
+
+				<!-- Modal content-->
+				<div>
+					<div>
+						<h4 class="modal-title">Register</h4>
+					</div>
+					<div class="modal-body">
+					
+						<form name="registrationForm" role="form" class="form-horizontal" ng-submit="ctrl.register()">
+							<div class="form-group">
+								<div class="col-sm-3" ng-class="{'has-error': registrationForm.fname.$error.required, 'has-success': registrationForm.fname.$valid }">
+									<label for="FirstName" class="col-sm-6">First Name:</label> 
+									<input type="text" name="fname" id="fname" ng-model="ctrl.user.fname" class="form-control" ng-required="true" ng-maxlength="50" ng-model-options="{ updateOn: 'blur' }"/>
+									<span class="help-block" ng-show="registrationForm.fname.$error.required">Required!!</span>
+									<span class="help-block" ng-show="registrationForm.fname.$error.maxlength">Maximum 50 characters allowed.</span>
+								</div>
+								<div class="col-sm-3" ng-class="{'has-error': registrationForm.mname.$error.maxlength, 'has-success': registrationForm.mname.$valid }">
+									<label for="MiddleName" class="col-sm-6">Middle Name:</label> 
+									<input type="text" name="mname" id="mname" ng-model="ctrl.user.mname" class="form-control" ng-maxlength="50" ng-model-options="{ updateOn: 'blur' }"/>
+									<span class="help-block" ng-show="registrationForm.mname.$error.maxlength">Maximum 50 characters allowed.</span>
+								</div>
+								<div class="col-sm-3" ng-class="{'has-error': registrationForm.lname.$error.required, 'has-success': registrationForm.lname.$valid }">
+									<label for="LastName" class="col-sm-6">Last Name:</label> 
+									<input type="text" name="lname" id="lname" ng-model="ctrl.user.lname" class="form-control" ng-maxlength="50" ng-required="true" ng-model-options="{ updateOn: 'blur' }"/>
+									<span class="help-block" ng-show="registrationForm.lname.$error.required">Required!!</span>
+									<span class="help-block" ng-show="registrationForm.lname.$error.maxlength">Maximum 50 characters allowed.</span>
+								</div>
+							</div>
+							<div class="form-group" ng-class="{'has-error': registrationForm.emailid.$error.required || registrationForm.emailid.$error.email , 'has-success': registrationForm.emailid.$valid }">
+								<label for="Email" class="col-sm-12">Email Id:</label> 
+								<div class="col-sm-6">
+									<input type="email" class="form-control" name="emailid" 
+										  	id="email" 
+										  	ng-maxlength="50" 
+										  	ng-model="ctrl.user.email" 
+										  	ng-required="true" 
+										  	ng-model-options="{ updateOn: 'blur' }"
+										  	/>
+									<span class="help-block" ng-show="registrationForm.emailid.$error.required">Required!!</span>
+									<span class="help-block" ng-show="registrationForm.emailid.$error.email">Not valid email!</span>
+									<span class="help-block" ng-show="registrationForm.emailid.$error.maxlength">Maximum 50 characters allowed.</span>
+								</div>
+								<div class="col-sm-6"><small>Eg. example@gmail.com, example@hotmail.com</small></div>
+								
+							</div>
+							<div class="form-group" ng-class="{'has-error': registrationForm.contact.$error.required || registrationForm.contact.$error.pattern  , 'has-success': registrationForm.contact.$valid }">
+								<label for="contact" class="col-sm-12">Contact Number:</label> 
+								<div class="col-sm-5">
+									<input type="text" name="contact" id="contactNumber" ng-model="ctrl.user.contactNumber" class="form-control" ng-pattern="/^\+[0-9]{12,12}$/" ng-required="true" ng-model-options="{ updateOn: 'blur' }"/>
+									<span class="help-block" ng-show="registrationForm.contact.$error.required">Required!!</span>
+									<span class="help-block" ng-show="registrationForm.contact.$error.pattern">Contact Number Format : +919876543210</span>
+								</div>
+								<div class="col-sm-6"><small>Eg. +919876543210</small></div>
+							</div>
+							<div class="form-group" 
+									ng-class="{'has-error': registrationForm.gstin.$error.required || registrationForm.gstin.$error.pattern  , 'has-success': registrationForm.gstin.$valid }">
+								<label for="gstin" class="col-sm-12" >GSTIN:</label> 
+								<div class="col-sm-5">
+									<input type="text" name="gstin" id="gstin" ng-model="ctrl.user.gstin" class="form-control" 
+									 ng-pattern="/^[0-9]{2}[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}[0-9]{1}[A-Za-z]{1}[0-9]{1}$/" ng-required="true" ng-model-options="{ updateOn: 'blur' }"/>
+									 <span class="help-block" ng-show="registrationForm.gstin.$error.required">Required!!</span>
+									 <span class="help-block" ng-show="registrationForm.gstin.$error.pattern">GSTIN Format (Sample) : 22ABCDE1234F1Z8</span>
+								</div>
+								<div class="col-sm-6"><small>Eg. 22ABCDE1234F1Z8</small></div>
+							</div>
+							<div class="form-group" ng-class="{'has-error': registrationForm.firmName.$error.required || registrationForm.firmName.$error.maxlength , 'has-success': registrationForm.firmName.$valid }">
+								<label for="firmName" class="col-sm-12">Name of the Firm:</label> 
+								<div class="col-sm-5">
+									<input type="text" name="firmName" id="firmName" ng-model="ctrl.user.firmName" class="form-control" ng-required="true" ng-maxlength="100" ng-model-options="{ updateOn: 'blur' }"/>
+									<span class="help-block" ng-show="registrationForm.firmName.$error.required">Required!!</span>
+									<span class="help-block" ng-show="registrationForm.firmName.$error.maxlength">Value too long. Maximum 100 characters allowed.</span>
+								</div>
+								<div class="col-sm-6"><small>Eg. ABC Corporation, XYZ Pvt Ltd.</small></div>
+							</div>
+							<div class="form-group" ng-class="{'has-error': registrationForm.address.$error.required || registrationForm.address.$error.maxlength , 'has-success': registrationForm.address.$valid }">
+								<label for="Address" class="col-sm-12">Address:</label> 
+								<div class="col-sm-12">
+									<textarea name="address" id="address" ng-model="ctrl.user.address" class="form-control" ng-required="true" ng-maxlength="100" ng-model-options="{ updateOn: 'blur' }">Enter address</textarea>
+									<span class="help-block" ng-show="registrationForm.address.$error.required">Required!!</span>
+									<span class="help-block" ng-show="registrationForm.address.$error.maxlength">Value too long. Maximum 100 characters allowed.</span>
+								</div>
+							</div>
+							<div class="form-group" ng-class="{'has-error': registrationForm.state.$error.required, 'has-success': registrationForm.state.$valid }">
+								<label for="state" class="col-sm-12">State:</label> 
+								<div class="col-sm-5">
+									<select ng-model="ctrl.user.state" name="state" 
+									ng-options="(state.statename+' ('+state.statecode+')') for state in ctrl.stateList" class="form-control"
+									ng-required="true">
+								</select>
+								<span class="help-block" ng-show="registrationForm.state.$error.required">Required!!</span>
+								</div>
+							</div>
+							<div class="form-group" ng-class="{'has-error': registrationForm.password.$error.pattern || registrationForm.password.$error.required, 'has-success': registrationForm.password.$valid }">
+								<label for="pwd" class="col-sm-12">Password:</label> 
+								<div class="col-sm-12">
+									<input type="password"
+									 	id="pwd"
+									 	name="password"
+										ng-model="ctrl.user.password" class="form-control" 
+										ng-pattern="/^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[$@£!%*#?])[A-Za-z0-9$@£!%*#?]{8,16}$/"
+										ng-required="true"
+										ng-model-options="{ updateOn: 'blur' }"
+										/>
+										<span class="help-block" ng-show="registrationForm.password.$error.required">Required!!</span>
+										<span class="help-block" ng-show="registrationForm.password.$error.pattern">Password must contain one special character from $@£!%*#? <br/>Must contain one digit<br/>Must be 8-16 characters long</span>
+								</div>
+							</div>
+							<div class="form-group" ng-class="{'has-error': !arePasswordsSame, 'has-success': registrationForm.confirmPassword.$valid }">
+								<label for="pwd" class="col-sm-12">Confirm Password:</label> 
+								<div class="col-sm-12"><input type="password"
+								    id="pwd"
+								    name="confirmPassword"
+								    ng-blur="checkPasswords(ctrl.user.confirmPassword, ctrl.user.password)"
+									ng-model="ctrl.user.confirmPassword" class="form-control" />
+									<span class="help-block" ng-hide="arePasswordsSame">Passwords do not match.</span>
+									</div>
+							</div>
+							
+							<button type="submit" class="ngdialog-button" ng-click="confirm(confirmValue)" ng-disabled="registrationForm.$invalid">Register</button>
+						</form>
+						<div class="modal-footer">
+							</div>
+					</div>
+				</div>
+			</div>
+		</div>

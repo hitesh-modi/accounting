@@ -1,0 +1,58 @@
+/*-------------------------
+	Simple reset
+--------------------------*/
+* {
+	margin: 0;
+	padding: 0;
+}
+
+/*-------------------------
+	General Styles
+--------------------------*/
+.footer {
+	position:absolute;
+    bottom:0;
+    width:100%;
+    height:60px;   /* Height of the footer */
+	background-color: #e3e8ea;
+	text-align: center;
+}
+
+a:hover {
+	text-decoration: none;
+}
+
+a:visited {
+	background-color: #efefef;
+}
+
+body {
+	font-family: 'Montserrat', sans-serif !important;
+	color: #3c3c58;
+	background-size: 10px 10px;
+	background-image: linear-gradient(to right, #e7e8ea 1px, transparent 1px),
+		linear-gradient(to bottom, #e7e8ea 1px, transparent 1px);
+}
+
+h2 {
+	font-family: 'Montserrat', sans-serif;
+	color: #3c3c58;
+}
+
+p {
+	font-family: 'Montserrat', sans-serif ;
+}
+
+p b {
+	font-family: 'Montserrat', sans-serif ;
+	color: #ffffff;
+	display: inline-block;
+	padding: 5px 10px;
+	background-color: #DC64C6;
+	border-radius: 2px;
+	size: 22px;
+	font-weight: bold;
+	text-transform: uppercase;
+	font-size: 18px;
+}
+
