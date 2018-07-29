@@ -28,8 +28,15 @@ public class InvoiceReportService implements IInvoiceReportService{
 
 	@Override
 	public Collection<InvoiceReportModel> getInvoices(final Date fromDate, final Date toDate) {
-		
-		Collection<Invoicedetail> invoicesFromDB = invoiceRepo.getInvoiceWithDateRange(fromDate, toDate);
+
+		Collection<Invoicedetail> invoicesFromDB = null;
+		if(fromDate == null && toDate == null) {
+			// TODO fetch first 30 records if date range is not provided.
+			//invoicesFromDB = invoiceRepo.findTop30();
+		} else {
+			invoicesFromDB = invoiceRepo.getInvoiceWithDateRange(fromDate, toDate);
+		}
+
 		List<InvoiceReportModel> invoiceModels = new ArrayList<>();
 		for (Invoicedetail invoicedetail : invoicesFromDB) {
 			

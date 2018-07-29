@@ -23,11 +23,7 @@ import org.hibernate.service.spi.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -37,8 +33,8 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.itextpdf.text.DocumentException;
 
-//@RestController
-//@RequestMapping("/services")
+@RestController
+@RequestMapping("/services")
 public class MainController {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(MainController.class);
@@ -294,25 +290,11 @@ public class MainController {
 	@ResponseBody
 	@RequiresPermissions("rw-invoice")
 	@PostMapping(value = "/getInvoiceReport")
-	public Collection<InvoiceReportModel> getInvoiceReports(@RequestBody String invoiceReportRequest)
+	public Collection<InvoiceReportModel> getInvoiceReports(@RequestBody InvoiceSearchRequest invoiceReportRequest)
 			throws ParseException, JsonParseException, JsonMappingException, IOException {
 		LOGGER.info("Request for generating invoice report received.");
-
-		ObjectNode objectNode = new ObjectMapper().readValue(invoiceReportRequest, ObjectNode.class);
-		String fromDateStr = "";
-		String toDateStr = "";
-		if (objectNode.has("fromDate")) {
-			fromDateStr = objectNode.get("fromDate").asText();
-		}
-		if (objectNode.has("toDate")) {
-			toDateStr = objectNode.get("toDate").asText();
-		}
-
 		Collection<InvoiceReportModel> reportData = null;
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-		Date fromDate = df.parse(fromDateStr);
-		Date toDate = df.parse(toDateStr);
-		reportData = invoiceReportService.getInvoices(fromDate, toDate);
+		reportData = invoiceReportService.getInvoices(invoiceReportRequest.getFromDate(), invoiceReportRequest.getToDate());
 		return reportData;
 	}
 	

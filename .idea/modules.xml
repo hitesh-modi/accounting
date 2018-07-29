@@ -5,7 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/accounting.iml" filepath="$PROJECT_DIR$/accounting.iml" />
       <module fileurl="file://$PROJECT_DIR$/margin-plus-ng/margin-plus-ng.iml" filepath="$PROJECT_DIR$/margin-plus-ng/margin-plus-ng.iml" />
       <module fileurl="file://$PROJECT_DIR$/margin-plus-service/margin-plus-service.iml" filepath="$PROJECT_DIR$/margin-plus-service/margin-plus-service.iml" />
-      <module fileurl="file://$PROJECT_DIR$/margin-plus-ng/ngdemo.iml" filepath="$PROJECT_DIR$/margin-plus-ng/ngdemo.iml" />
     </modules>
   </component>
 </project>

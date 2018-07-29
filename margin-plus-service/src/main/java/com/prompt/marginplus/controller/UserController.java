@@ -35,11 +35,6 @@ public class UserController {
 	@Resource(name="userService")
 	private IUserService userService;
 	
-	@RequestMapping("/")
-	public String home() {
-		return "index";
-	}
-	
 
 	@RequestMapping("/logout")
 	public String logout() {
@@ -52,16 +47,14 @@ public class UserController {
 	
 	
 	@PostMapping("/login")
-	public @ResponseBody Response login(@Valid @RequestBody String data) {
+	public @ResponseBody UserModel login(@Valid @RequestBody String data) {
 		LOGGER.info("Login method called with data : " + data);
-		String returnStatus = "failure";
+		UserModel user = null;
 		try {
 			AuthInfo authData = new ObjectMapper().readValue(data, AuthInfo.class);
-			boolean loginSuccess = userService.login(authData);
-			if(loginSuccess == true) 
-				returnStatus = "success";
-			else
-				returnStatus = "failure";
+			userService.login(authData);
+			user = userService.getUserInfo();
+
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -72,14 +65,20 @@ public class UserController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return new Response(returnStatus);
+		return user;
 	}
 	
-	@RequestMapping(value="/getUserName")
+	@RequestMapping(value="/getUser")
 	@RequiresPermissions("dashboard")
 	public @ResponseBody
-    UserModel getUserName() {
+    UserModel getUserInfo() {
 		return userService.getUserInfo();
+	}
+
+	@RequestMapping(value="/isUserAuthenticated")
+	public @ResponseBody
+	Boolean isUserAuthenticated() {
+		return userService.isUserAuthenticated();
 	}
 	
 	@RequestMapping(value="/getStates")

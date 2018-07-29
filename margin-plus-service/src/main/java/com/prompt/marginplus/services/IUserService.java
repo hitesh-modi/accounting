@@ -16,6 +16,8 @@ public interface IUserService {
 	
 	public UserModel getUserInfo();
 
+	public boolean isUserAuthenticated();
+
 	public Collection<StateModel> getStates();
 
 	public void registerUser(UserModel userToRegister) throws UserWithEmailExistsException,UserWithMobileExistsException;

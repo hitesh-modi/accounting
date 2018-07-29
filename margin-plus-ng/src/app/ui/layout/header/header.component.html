@@ -11,10 +11,20 @@
     <a class="active nav-link nav-icon">
       <clr-icon shape="home"></clr-icon>
     </a>
+  </div>
 
-    <a class="nav-link nav-icon">
-      <clr-icon shape="cog"></clr-icon>
-    </a>
+  <div class="header-actions" *ngIf="globalDataService.userAuthenticated">
+    <clr-dropdown>
+      <button class="nav-icon" clrDropdownTrigger>
+        <clr-icon shape="user"></clr-icon>
+        <clr-icon shape="caret down"></clr-icon>
+      </button>
+      <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
+        <a href="..." clrDropdownItem>About</a>
+        <a href="..." clrDropdownItem>Preferences</a>
+        <a href="..." clrDropdownItem>Log out</a>
+      </clr-dropdown-menu>
+    </clr-dropdown>
   </div>
 
 
@@ -24,38 +34,43 @@
     </label>
   </form>
 
-  <div class="header_actions">
-    <clr-dropdown class="dropdown bottom-right">
-
-      <button class="nav-icon" clrDropdownToggle>
-        <clr-icon shape="user"></clr-icon>
-        <clr-icon shape="caret down"></clr-icon>
-      </button>
-
-      <div class="dropdown-menu">
-        <a clrDropdownItem>About</a>
-        <a clrDropdownItem>Preferences</a>
-        <a clrDropdownItem>Logout</a>
-      </div>
-
-    </clr-dropdown>
-  </div>
-
 
 </header>
-<nav class="subnav">
+
+<nav class="subnav" *ngIf="globalDataService.userAuthenticated">
   <ul class="nav">
     <li class="nav-item">
-      <a class="nav-link active" href="#">Dashboard</a>
+      <a class="nav-link" (click)="toggleNavigation('dashboard')" [ngClass]="{active: dashActive}" routerLink="dashboard">Dashboard</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#">Invoices</a>
+      <a class="nav-link" (click)="toggleNavigation('invoice')" [ngClass]="{active: invoiceActive}" [routerLink]="['invoices']">Invoices</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#">Products</a>
+      <a class="nav-link" (click)="toggleNavigation('product')" [ngClass]="{active: productActive}">Products</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#">Report</a>
+      <a class="nav-link" (click)="toggleNavigation('report')" [ngClass]="{active: reportActive}">Report</a>
     </li>
   </ul>
 </nav>
+
+
+<nav class="subnav" *ngIf="!globalDataService.userAuthenticated">
+  <ul class="nav">
+    <li class="nav-item">
+      <button class="btn btn-icon btn-link" (click)="showLoginModal = true">
+        <clr-icon shape="user"></clr-icon>
+        Login
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="btn btn-icon btn-link">
+        <clr-icon shape="plus-circle"></clr-icon>
+        Register
+      </button>
+    </li>
+  </ul>
+</nav>
+
+<app-login *ngIf="showLoginModal" (closed)="showLoginModal = $event"
+           (loginStatus)="updateDirectives($event)"></app-login>

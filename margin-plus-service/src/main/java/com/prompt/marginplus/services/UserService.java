@@ -67,11 +67,12 @@ public class UserService implements IUserService {
 		
 		return loginSuccess;
 	}
+
+
 	
 	@Override
 	public UserModel getUserInfo() {
 		String userid = (String)SecurityUtils.getSubject().getPrincipal();
-		
 		User user = userRepo.getUser(userid);
 		UserModel userModel = new UserModel();
 		userModel.setUserid(user.getUsername());
@@ -85,8 +86,16 @@ public class UserService implements IUserService {
 		userModel.setState(state);
 		return userModel;
 	}
-	
-	@Override
+
+    @Override
+    public boolean isUserAuthenticated() {
+		LOGGER.info("Checking if user is authenticated or not");
+        Subject user = SecurityUtils.getSubject();
+        LOGGER.info("Returning " + user.isAuthenticated());
+        return user.isAuthenticated();
+    }
+
+    @Override
 	public Collection<StateModel> getStates() {
 		Iterable<State> states = stateRepo.findAll();
 		LOGGER.info("Getting states from database");
