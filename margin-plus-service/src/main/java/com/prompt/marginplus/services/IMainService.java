@@ -10,17 +10,17 @@ public interface IMainService {
 
 	public String[] getProductTypes() throws ServiceExcpetion;
 
-	public long saveProduct(Product product) throws ServiceExcpetion;
+	public long saveProduct(Product product, String userid) throws ServiceExcpetion;
 
-	public Collection<Product> getProducts() throws ServiceException;
+	public Collection<Product> getProducts(String userid) throws ServiceException;
 
-	public Product getProduct(String productId) throws ServiceExcpetion;
+	public Product getProduct(String productId, String userid) throws ServiceExcpetion;
 
     public String generateInvoiceNumber()throws ServiceException;
 	
-	public Collection<Customer> getCustomers() throws ServiceException;
+	public Collection<Customer> getCustomers(String userid) throws ServiceException;
 
-	public Collection<Consignee> getConsignees() throws ServiceException;
+	public Collection<Consignee> getConsignees(String userid) throws ServiceException;
 
 	public Collection<SacHeadingModel> getHeadingsForAllAccountingCodes() throws ServiceException;
 

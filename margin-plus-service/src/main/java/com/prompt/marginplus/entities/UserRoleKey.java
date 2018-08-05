@@ -11,7 +11,7 @@ public class UserRoleKey implements Serializable{
 	
 	private String roleName;
 	
-	private String username;
+	private String userid;
 
 	public String getRoleName() {
 		return roleName;
@@ -21,12 +21,12 @@ public class UserRoleKey implements Serializable{
 		this.roleName = roleName;
 	}
 
-	public String getUsername() {
-		return username;
+	public String getUserid() {
+		return userid;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setUserid(String username) {
+		this.userid = username;
 	}
 	
 }

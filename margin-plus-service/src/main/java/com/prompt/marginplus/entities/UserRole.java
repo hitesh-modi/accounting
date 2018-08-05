@@ -19,9 +19,9 @@ public class UserRole implements Serializable {
 	@Id
 	private String roleName;
 	
-	@Column(name="username", insertable=false, updatable=false)
+	@Column(name="userid", insertable=false, updatable=false)
 	@Id
-	private String username;
+	private String userid;
 
 	public UserRole() {
 	}
@@ -34,12 +34,12 @@ public class UserRole implements Serializable {
 		this.roleName = roleName;
 	}
 
-	public String getUsername() {
-		return username;
+	public String getUserid() {
+		return userid;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setUserid(String userid) {
+		this.userid = userid;
 	}
 
 }

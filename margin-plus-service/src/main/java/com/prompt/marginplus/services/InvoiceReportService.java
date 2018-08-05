@@ -12,30 +12,43 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.prompt.marginplus.entities.Invoicedetail;
+import com.prompt.marginplus.entities.User;
 import com.prompt.marginplus.models.InvoiceReportModel;
+import com.prompt.marginplus.repositories.UserRepository;
 import org.apache.commons.lang3.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.prompt.marginplus.repositories.InvoiceRepository;
 
 @Component("invoiceReportService")
 public class InvoiceReportService implements IInvoiceReportService{
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(InvoiceReportService.class);
 	
 	@Resource
 	private InvoiceRepository invoiceRepo;
+
+	@Resource
+	private UserRepository userRepository;
 	
 	private static final BigDecimal ZERO = new BigDecimal(0);
 
 	@Override
-	public Collection<InvoiceReportModel> getInvoices(final Date fromDate, final Date toDate) {
+	public Collection<InvoiceReportModel> getInvoices(final Date fromDate, final Date toDate, final String userid) {
+
+		User user = userRepository.getUser(userid);
 
 		Collection<Invoicedetail> invoicesFromDB = null;
 		if(fromDate == null && toDate == null) {
 			// TODO fetch first 30 records if date range is not provided.
-			//invoicesFromDB = invoiceRepo.findTop30();
+			invoicesFromDB = invoiceRepo.findTop30ByUser(user);
 		} else {
-			invoicesFromDB = invoiceRepo.getInvoiceWithDateRange(fromDate, toDate);
+			invoicesFromDB = invoiceRepo.getInvoiceWithDateRange(fromDate, toDate, userid);
 		}
+
+		LOGGER.info("Invoices fetched from Database: " + invoicesFromDB);
 
 		List<InvoiceReportModel> invoiceModels = new ArrayList<>();
 		for (Invoicedetail invoicedetail : invoicesFromDB) {

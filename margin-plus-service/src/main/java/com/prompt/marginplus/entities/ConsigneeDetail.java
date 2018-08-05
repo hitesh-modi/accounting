@@ -51,6 +51,10 @@ public class ConsigneeDetail implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="CONSIGNEE_STATE_CODE")
 	private State state;
+
+	@ManyToOne
+	@JoinColumn(name="USERID")
+	private User user;
 	
 	@Column(name="CONSIGNEE_GSTIN")
 	private String consigneeGSTIN;
@@ -164,5 +168,12 @@ public class ConsigneeDetail implements Serializable {
 		this.state = state;
 	}
 
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
 
 }

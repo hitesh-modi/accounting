@@ -69,7 +69,6 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/getUser")
-	@RequiresPermissions("dashboard")
 	public @ResponseBody
     UserModel getUserInfo() {
 		return userService.getUserInfo();

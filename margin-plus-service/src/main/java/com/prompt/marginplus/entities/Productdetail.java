@@ -54,7 +54,11 @@ public class Productdetail implements Serializable {
 	@OneToOne
 	@JoinColumn(name="pd_hsn")
 	private HSN productHSN;
-	
+
+	@ManyToOne
+	@JoinColumn(name="PD_USERID")
+	private User user;
+
 	@OneToOne
 	@JoinColumn(name="pd_sac")
 	private SacMaster productSac;
@@ -235,6 +239,14 @@ public class Productdetail implements Serializable {
 
 	public void setProductSac(SacMaster productSac) {
 		this.productSac = productSac;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 }

@@ -20,7 +20,7 @@ export class HeaderComponent implements OnInit {
   constructor(public globalDataService: GlobalDataService) { }
 
   updateDirectives(loginStatus: boolean) {
-    console.log('Login Status', loginStatus);
+    console.log('Login Status', loginStatus, this.globalDataService.userinfo);
     if(loginStatus == true) {
       this.showLoginModal = false;
     }

@@ -41,7 +41,11 @@ public class CustomerDetail implements Serializable {
 
 	@Column(name="CD_MODIFICATIONTIMESTAMP")
 	private Timestamp cdModificationtimestamp;
-	
+
+	@ManyToOne
+	@JoinColumn(name="CD_USERID")
+	private User user;
+
 	@ManyToOne
 	@JoinColumn(name="CD_CUSTOMER_STATE_CODE")
 	private State state;
@@ -155,6 +159,14 @@ public class CustomerDetail implements Serializable {
 		invoicedetail.setCustomerDetail(null);
 
 		return invoicedetail;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public State getState() {

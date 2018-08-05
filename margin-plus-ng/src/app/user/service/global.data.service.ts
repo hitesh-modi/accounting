@@ -13,9 +13,12 @@ export class GlobalDataService {
     if(isDevMode()) {
       console.log('Running in local mode');
       this.userAuthenticated = true;
+      this.userinfo = new UserModel();
     }
   }
 
   public userAuthenticated: boolean;
+
+  public userinfo: UserModel;
 
 }

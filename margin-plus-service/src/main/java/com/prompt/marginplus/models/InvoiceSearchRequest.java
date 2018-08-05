@@ -8,6 +8,16 @@ public class InvoiceSearchRequest {
 
     private Date toDate;
 
+    private String userid;
+
+    public String getUserid() {
+        return userid;
+    }
+
+    public void setUserid(String userid) {
+        this.userid = userid;
+    }
+
     public Date getFromDate() {
         return fromDate;
     }

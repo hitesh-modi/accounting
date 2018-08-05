@@ -7,6 +7,6 @@ import com.prompt.marginplus.models.InvoiceReportModel;
 
 public interface IInvoiceReportService {
 
-	Collection<InvoiceReportModel> getInvoices(Date fromDate, Date toDate);
+	Collection<InvoiceReportModel> getInvoices(Date fromDate, Date toDate, String userid);
 
 }

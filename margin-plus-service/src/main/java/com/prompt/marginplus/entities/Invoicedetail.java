@@ -39,7 +39,7 @@ public class Invoicedetail implements Serializable {
 
 	@Column(name="id_creationtimestamp")
 	private Timestamp ID_CreationTimestamp;
-	
+
 	@Column(name="id_invoicenumber")
 	private String ID_InvoiceNumber;
 
@@ -53,6 +53,9 @@ public class Invoicedetail implements Serializable {
 	@Column(name="id_grandtotal")
 	private BigDecimal ID_GrandTotal;
 
+	@ManyToOne
+	@JoinColumn(name="ID_USERID")
+	private User user;
 
 	@Column(name="id_invoicepaidamount")
 	private BigDecimal ID_InvoicePaidAmount;
@@ -214,4 +217,11 @@ public class Invoicedetail implements Serializable {
 		ID_InvoiceDueDate = iD_InvoiceDueDate;
 	}
 
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
 }

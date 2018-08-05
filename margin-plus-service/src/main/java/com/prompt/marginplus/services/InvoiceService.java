@@ -89,24 +89,24 @@ public class InvoiceService implements IInvoiceService{
 
 	@Override
 	@Transactional
-	public String createInvoice(final Invoice invoice) {
+	public String createInvoice(final Invoice invoice, final String userid) {
 		LOGGER.info("Creating invoice " + invoice);
 		CustomerDetail customerEntity = null;
 		ConsigneeDetail consigneeEntity = null;
-		customerEntity = createCustomerEntity(invoice.getCustomer());
+		customerEntity = createCustomerEntity(invoice.getCustomer(), userid);
 		if(invoice.isNewCustomer()) {
 			customerRepository.save(customerEntity);
 		}
 		
         if(invoice.getNewConsignee().equalsIgnoreCase("true")) {
-		    consigneeEntity = createConsigneeEntity(invoice.getConsignee());
+		    consigneeEntity = createConsigneeEntity(invoice.getConsignee(), userid);
 		    consigneeRepo.save(consigneeEntity);
         } else if(invoice.getNewConsignee().equalsIgnoreCase("SAME_AS_CUSTOMER")){
         	// Check if the Consignee with same name and contact details exists if yes then do not create a new consignee else create it.
         	Consignee consigneeModel = invoice.getConsignee();
         	ConsigneeDetail consigneeDetailFromDb = consigneeRepo.getConsigneeByNameAndMobileNumber(consigneeModel.getName(), consigneeModel.getMobileNo());
         	if(consigneeDetailFromDb == null) {
-        		consigneeEntity = createConsigneeEntity(invoice.getConsignee());
+        		consigneeEntity = createConsigneeEntity(invoice.getConsignee(), userid);
         		consigneeRepo.save(consigneeEntity);
         	}
         	else
@@ -167,7 +167,10 @@ public class InvoiceService implements IInvoiceService{
 	
 	
 	
-	private CustomerDetail createCustomerEntity(Customer customer) {
+	private CustomerDetail createCustomerEntity(Customer customer, String user) {
+
+		User userEntity = userRepo.findById(user).get();
+
 	    CustomerDetail customerDetail = new CustomerDetail();
 	    customerDetail.setCdCustomerId(customer.getCustomerId());
 	    customerDetail.setCdCustomerName(customer.getName());
@@ -176,13 +179,17 @@ public class InvoiceService implements IInvoiceService{
 	    customerDetail.setCdCustomerMobile(customer.getMobileNo());
 	    customerDetail.setCdCustomerEmail(customer.getEmail());
 	    customerDetail.setCdCustomerPhone(customer.getPhoneNo());
+	    customerDetail.setUser(userEntity);
 	    State state = stateRepo.findById(customer.getStateCode()).get();
 	    customerDetail.setState(state);
 	   
 	    return customerDetail;
     }
 
-    private ConsigneeDetail createConsigneeEntity(Consignee consignee) {
+    private ConsigneeDetail createConsigneeEntity(Consignee consignee, String user) {
+
+		User userEntity = userRepo.getUser(user);
+
         ConsigneeDetail consigneeDetail = new ConsigneeDetail();
         consigneeDetail.setConsigneeName(consignee.getName());
         consigneeDetail.setConsigneeAddress(consignee.getAddress());
@@ -190,6 +197,7 @@ public class InvoiceService implements IInvoiceService{
         consigneeDetail.setConsigneeEmail(consignee.getEmail());
         consigneeDetail.setConsigneeMobile(consignee.getMobileNo());
         consigneeDetail.setConsigneePhone(consignee.getPhoneNo());
+        consigneeDetail.setUser(userEntity);
         State state = stateRepo.findById(consignee.getStateCode()).get();
         consigneeDetail.setState(state);
         return  consigneeDetail;
@@ -710,7 +718,7 @@ public class InvoiceService implements IInvoiceService{
     }
     
     @Override
-    public Invoice getInvoice(String invoiceId) {
+    public Invoice getInvoice(String invoiceId, String userid) {
     	Invoicedetail invoiceEntity = invoiceRepo.findById(invoiceId).get();
     	return ConversionUtility.convertInvoiceEntityToModel(invoiceEntity);
     }

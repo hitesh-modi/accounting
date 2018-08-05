@@ -56,12 +56,12 @@ public class MainController {
 
 	@RequiresPermissions("create-product")
 	@PostMapping(value = "/createProduct", produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody String createProduct(@Valid @RequestBody String productJson) throws JsonProcessingException {
+	public @ResponseBody String createProduct(@Valid @RequestBody String productJson, @Valid @RequestBody String userid) throws JsonProcessingException {
 		LOGGER.info("Request received for Product Creation with data " + productJson);
 		Long id = -1L;
 		try {
 			Product product = new ObjectMapper().readValue(productJson, Product.class);
-			id = mainService.saveProduct(product);
+			id = mainService.saveProduct(product, userid);
 			LOGGER.info(product.toString());
 		} catch (JsonParseException e) {
 			LOGGER.info("JsonParseException during service call", e);
@@ -123,11 +123,11 @@ public class MainController {
 	@ResponseBody
 	@RequiresPermissions("read-product")
 	@GetMapping(value = "/getProducts")
-	public Collection<Product> getProducts() {
+	public Collection<Product> getProducts(@RequestParam String userid) {
 		LOGGER.info("Getting product types from service");
 		Collection<Product> products = null;
 		try {
-			products = mainService.getProducts();
+			products = mainService.getProducts(userid);
 		} catch (ServiceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -138,9 +138,9 @@ public class MainController {
     @ResponseBody
     @RequiresPermissions("rw-invoice")
     @GetMapping(value = "/getProduct")
-    public Product getProduct(@RequestParam String productId) throws ServiceExcpetion {
+    public Product getProduct(@RequestParam String productId, @RequestParam String userid) throws ServiceExcpetion {
         LOGGER.info("Request for retrieving Product:" + productId);
-        return mainService.getProduct(productId);
+        return mainService.getProduct(productId, userid);
     }
 
 	@ResponseBody
@@ -154,11 +154,11 @@ public class MainController {
 	@ResponseBody
 	@RequiresPermissions("read-customer")
 	@GetMapping(value = "/getCustomers")
-	public Collection<Customer> getCustomers() {
+	public Collection<Customer> getCustomers(@RequestParam String userid) {
 		LOGGER.info("Getting Customers from service");
 		Collection<Customer> customers = null;
 		try {
-			customers = mainService.getCustomers();
+			customers = mainService.getCustomers(userid);
 		} catch (ServiceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -169,12 +169,12 @@ public class MainController {
 	@ResponseBody
 	@RequiresPermissions("rw-invoice")
 	@PostMapping(value = "/createInvoice")
-	public String createInvoice(@Valid @RequestBody String invoiceJson) {
+	public String createInvoice(@Valid @RequestBody String invoiceJson, @Valid @RequestBody String userId) {
 		LOGGER.info("Create Invoice received for " + invoiceJson);
 		String invoiceNumber = "";
 		try {
 			Invoice invoice = new ObjectMapper().readValue(invoiceJson, Invoice.class);
-			invoiceNumber = invoiceService.createInvoice(invoice);
+			invoiceNumber = invoiceService.createInvoice(invoice, userId);
 			return invoiceNumber;
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage());
@@ -185,11 +185,11 @@ public class MainController {
 	@ResponseBody
 	@RequiresPermissions("read-consignee")
 	@GetMapping(value = "/getConsignees")
-	public Collection<Consignee> getConsignees() {
+	public Collection<Consignee> getConsignees(@RequestParam String userid) {
 		LOGGER.info("Getting product types from service");
 		Collection<Consignee> consignees = null;
 		try {
-			consignees = mainService.getConsignees();
+			consignees = mainService.getConsignees(userid);
 		} catch (ServiceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -294,16 +294,16 @@ public class MainController {
 			throws ParseException, JsonParseException, JsonMappingException, IOException {
 		LOGGER.info("Request for generating invoice report received.");
 		Collection<InvoiceReportModel> reportData = null;
-		reportData = invoiceReportService.getInvoices(invoiceReportRequest.getFromDate(), invoiceReportRequest.getToDate());
+		reportData = invoiceReportService.getInvoices(invoiceReportRequest.getFromDate(), invoiceReportRequest.getToDate(), invoiceReportRequest.getUserid());
 		return reportData;
 	}
 	
 	@ResponseBody
 	@RequiresPermissions("rw-invoice")
 	@GetMapping(value = "/getInvoice")
-	public Invoice getInvoice(@RequestParam String invoiceId) {
+	public Invoice getInvoice(@RequestParam String invoiceId, @RequestParam String userid) {
 		LOGGER.info("Request for retriving invoice:" + invoiceId);
-		return invoiceService.getInvoice(invoiceId);
+		return invoiceService.getInvoice(invoiceId, userid);
 	}
 	
 	@RequiresPermissions("rw-invoice")

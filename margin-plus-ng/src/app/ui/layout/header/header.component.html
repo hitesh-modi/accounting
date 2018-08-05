@@ -13,7 +13,7 @@
     </a>
   </div>
 
-  <div class="header-actions" *ngIf="globalDataService.userAuthenticated">
+  <div class="header-actions" *ngIf="globalDataService.userinfo.userAuthenticated">
     <clr-dropdown>
       <button class="nav-icon" clrDropdownTrigger>
         <clr-icon shape="user"></clr-icon>
@@ -36,8 +36,7 @@
 
 
 </header>
-
-<nav class="subnav" *ngIf="globalDataService.userAuthenticated">
+<nav class="subnav" *ngIf="globalDataService.userinfo.userAuthenticated">
   <ul class="nav">
     <li class="nav-item">
       <a class="nav-link" (click)="toggleNavigation('dashboard')" [ngClass]="{active: dashActive}" routerLink="dashboard">Dashboard</a>
@@ -55,7 +54,7 @@
 </nav>
 
 
-<nav class="subnav" *ngIf="!globalDataService.userAuthenticated">
+<nav class="subnav" *ngIf="!globalDataService.userinfo.userAuthenticated">
   <ul class="nav">
     <li class="nav-item">
       <button class="btn btn-icon btn-link" (click)="showLoginModal = true">

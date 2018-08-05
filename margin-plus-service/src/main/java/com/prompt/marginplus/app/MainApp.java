@@ -11,12 +11,14 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import java.net.URL;
+import java.net.URLClassLoader;
+
 @SpringBootApplication
 @EnableAutoConfiguration(exclude = {QuartzAutoConfiguration.class})
 @ComponentScan(basePackages={"com.prompt.marginplus"})
 @EntityScan(basePackages={"com.prompt.marginplus.entities"})
 @EnableJpaRepositories(basePackages={"com.prompt.marginplus.repositories"})
-@EnableWebMvc
 @Import(ShiroConfig.class)
 public class MainApp extends SpringBootServletInitializer{
 	public static void main(String[] args) {

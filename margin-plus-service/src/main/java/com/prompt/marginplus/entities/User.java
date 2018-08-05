@@ -16,6 +16,9 @@ public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	private long userid;
+
 	private String username;
 
 	private String address;
@@ -33,7 +36,15 @@ public class User implements Serializable {
 	private String middlename;
 
 	private String password;
-	
+
+	public long getUserid() {
+		return userid;
+	}
+
+	public void setUserid(long userid) {
+		this.userid = userid;
+	}
+
 	private String logopath;
 
 
@@ -42,7 +53,7 @@ public class User implements Serializable {
 	private State state;
 
 	//bi-directional many-to-one association to UserRole
-	@OneToMany(mappedBy="username")
+	@OneToMany(mappedBy="userid")
 	private List<UserRole> userRoles;
 
 	public User() {
@@ -143,5 +154,5 @@ public class User implements Serializable {
 	public void setLogopath(String logopath) {
 		this.logopath = logopath;
 	}
-	
+
 }

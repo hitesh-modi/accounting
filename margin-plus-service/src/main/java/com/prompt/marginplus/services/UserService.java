@@ -73,17 +73,27 @@ public class UserService implements IUserService {
 	@Override
 	public UserModel getUserInfo() {
 		String userid = (String)SecurityUtils.getSubject().getPrincipal();
-		User user = userRepo.getUser(userid);
 		UserModel userModel = new UserModel();
-		userModel.setUserid(user.getUsername());
-		userModel.setUserName(constructUserName(user.getFirstname(), user.getMiddlename(), user.getLastname()));
-		userModel.setAddress(user.getAddress());
-		userModel.setGstin(user.getGstin());
-		userModel.setFirmName(user.getBusinessname());
-		StateModel state = new StateModel();
-		state.setStatename(user.getState().getStatename());
-		state.setStatecode(user.getState().getStatecode());
-		userModel.setState(state);
+
+		if(userid == null) {
+			LOGGER.info("User is not authenticated");
+			userModel.setUserAuthenticated(false);
+		} else {
+			LOGGER.info("User is not authenticated: " + userid);
+			User user = userRepo.getUser(userid);
+			userModel.setUserid(user.getUsername());
+			userModel.setUserName(constructUserName(user.getFirstname(), user.getMiddlename(), user.getLastname()));
+			userModel.setAddress(user.getAddress());
+			userModel.setGstin(user.getGstin());
+			userModel.setFirmName(user.getBusinessname());
+			StateModel state = new StateModel();
+			state.setStatename(user.getState().getStatename());
+			state.setStatecode(user.getState().getStatecode());
+			userModel.setState(state);
+			userModel.setUserAuthenticated(true);
+		}
+
+
 		return userModel;
 	}
 
@@ -144,7 +154,7 @@ public class UserService implements IUserService {
 		List<UserRole> roles = new ArrayList<>();
 		UserRole role = new UserRole();
 		role.setRoleName("normalUser");
-		role.setUsername(userToRegister.getEmail());
+		role.setUserid(userToRegister.getEmail());
 		roles.add(role);
 		user.setUserRoles(roles);
 		

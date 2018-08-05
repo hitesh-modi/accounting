@@ -2,6 +2,7 @@
 import {Injectable, isDevMode} from "@angular/core";
 import {UserService} from "../../user/service/user.service";
 import {GlobalDataService} from "../../user/service/global.data.service";
+import {UserModel} from "../../user/models/UserModel";
 
 @Injectable()
 export class AppInitializerService {
@@ -9,22 +10,24 @@ export class AppInitializerService {
   constructor(private userService: UserService, private globalDataService: GlobalDataService) {}
 
   initaializeApp(): Promise<any> {
+    return this._getUserInfo();
+  }
 
-    let promise: Promise<any> = new Promise(null);
-
-    if(isDevMode()) {
-      this.globalDataService.userAuthenticated = true;
-    }
-
-    else {
-      let promise = this.userService.getIsUserAuthenticated().toPromise().then(
-        onloadeddata => {
-          this.globalDataService.userAuthenticated = onloadeddata;
+  private _getUserInfo() {
+    let promise = this.userService.getUserinfo().toPromise().then(
+      onloadeddata => {
+        if(isDevMode()) {
+          let user: UserModel = new UserModel();
+          user.userAuthenticated = true;
+          user.userName = 'Hitesh Modi';
+          user.userid = 'er.hiteshmodi@gmail.com';
+          this.globalDataService.userinfo = user;
         }
-      );
-    }
-
-
+        else {
+          this.globalDataService.userinfo = onloadeddata;
+        }
+      }
+    );
     return promise;
   }
 

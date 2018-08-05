@@ -27,6 +27,8 @@ public class UserModel {
 	private String contactNumber;
 	
 	private StateModel state;
+
+	private boolean isUserAuthenticated;
 	
 	public StateModel getState() {
 		return state;
@@ -132,6 +134,13 @@ public class UserModel {
 		this.confirmPassword = confirmPassword;
 	}
 
+	public boolean isUserAuthenticated() {
+		return isUserAuthenticated;
+	}
+
+	public void setUserAuthenticated(boolean userAuthenticated) {
+		isUserAuthenticated = userAuthenticated;
+	}
 
 	@Override
 	public String toString() {

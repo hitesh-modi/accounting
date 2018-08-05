@@ -16,6 +16,7 @@ import {FormsModule} from "@angular/forms";
 import {DatePipe} from "@angular/common";
 
 export function init_app(appInitService: AppInitializerService) {
+  console.log("Initializing Data");
  return () => appInitService.initaializeApp();
 }
 
@@ -33,7 +34,12 @@ export function init_app(appInitService: AppInitializerService) {
     ClrFormsNextModule,
     FormsModule
   ],
-  providers: [AppInitializerService, AppModuleConfig, InvoiceService, DatePipe],
+  providers: [AppInitializerService,
+    AppModuleConfig,
+    InvoiceService,
+    DatePipe,
+    { provide: APP_INITIALIZER, useFactory: init_app, deps: [AppInitializerService, UserService, GlobalDataService], multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

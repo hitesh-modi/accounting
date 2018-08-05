@@ -9,22 +9,13 @@ import javax.annotation.Resource;
 
 import com.prompt.marginplus.entities.*;
 import com.prompt.marginplus.models.*;
+import com.prompt.marginplus.repositories.*;
 import org.hibernate.service.spi.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Iterables;
-import com.prompt.marginplus.repositories.ConsigneeRepository;
-import com.prompt.marginplus.repositories.CustomerRepository;
-import com.prompt.marginplus.repositories.HSNChapterRepository;
-import com.prompt.marginplus.repositories.HSNRepository;
-import com.prompt.marginplus.repositories.HSNSectionRepository;
-import com.prompt.marginplus.repositories.InvoiceNumberRepo;
-import com.prompt.marginplus.repositories.ProductRepository;
-import com.prompt.marginplus.repositories.SacGroupRepository;
-import com.prompt.marginplus.repositories.SacHeadingRepository;
-import com.prompt.marginplus.repositories.SacRepository;
 import com.prompt.marginplus.types.ProductType;
 import com.prompt.marginplus.utility.Util;
 
@@ -32,7 +23,10 @@ import com.prompt.marginplus.utility.Util;
 public class MainService implements IMainService{
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(MainService.class);
-	
+
+	@Resource(name="userRepo")
+	private UserRepository userRepo;
+
 	@Resource(name="productRepository")
 	private ProductRepository productRepository;
 	
@@ -74,8 +68,10 @@ public class MainService implements IMainService{
 	}
 	
 	@Override
-	public long saveProduct(Product product) {
+	public long saveProduct(Product product, String userId) {
 		LOGGER.info("Saving Product");
+
+		User user = userRepo.findById(userId).get();
 
         Productdetail productDetail = new Productdetail();
 		if(product.getProductId() != 0) {
@@ -89,6 +85,7 @@ public class MainService implements IMainService{
 		productDetail.setAgencyStartDate(product.getAgencyStartDate());
 		productDetail.setProductCompany(product.getCompany());
 		productDetail.setProductTaxRate(product.getTaxRate());
+		productDetail.setUser(user);
 		if(product.isGood()) {
 			HSN hsn = new HSN();
 			hsn.setHsnCode(product.getHsnCode());
@@ -108,10 +105,13 @@ public class MainService implements IMainService{
 	}
 	
 	@Override
-	public Collection<Product> getProducts() {
+	public Collection<Product> getProducts(String userid) {
 		LOGGER.info("Get all the products");
 		Collection<Product> products = new ArrayList<Product>();
-		Iterable<Productdetail> productsFromDB = productRepository.findAll();
+
+		User user = userRepo.getUser(userid);
+
+		Iterable<Productdetail> productsFromDB = productRepository.findAllByUser(user);
 		LOGGER.info("Found " + Iterables.size(productsFromDB) + " from Database.");
 		String goodsOrService = "";
 		for (Productdetail productdetail : productsFromDB) {
@@ -141,10 +141,11 @@ public class MainService implements IMainService{
 	}
 
 	@Override
-	public Product getProduct(final String productId) {
+	public Product getProduct(final String productId, final String userId) {
 		LOGGER.info("Get product with Id: " + productId);
 		Collection<Product> products = new ArrayList<Product>();
-		Productdetail productdetail = productRepository.findById(Long.parseLong(productId)).get();
+		User user = userRepo.findById(userId).get();
+		Productdetail productdetail = productRepository.findByProductIdAndUser(Long.parseLong(productId), user);
 		LOGGER.info("Found " + productdetail + " from Database.");
 		String goodsOrService = "";
 			Product product = new Product();
@@ -186,9 +187,12 @@ public class MainService implements IMainService{
 	}
 
 	@Override
-	public Collection<Customer> getCustomers() throws ServiceException {
+	public Collection<Customer> getCustomers(final String userid) throws ServiceException {
 		LOGGER.info("Getting list of customers.");
-		Iterable<CustomerDetail> cutomersFromDb = customerRepository.findAll();
+
+		User user = userRepo.getUser(userid);
+
+		Iterable<CustomerDetail> cutomersFromDb = customerRepository.findAllByUser(user);
 		List<Customer> customers = new ArrayList<Customer>();
 		LOGGER.info("Received " + Iterables.size(cutomersFromDb) + " cutomers from DB");
 		for (CustomerDetail customerDetail : cutomersFromDb) {
@@ -208,9 +212,12 @@ public class MainService implements IMainService{
 	}
 	
 	@Override
-	public Collection<Consignee> getConsignees() throws ServiceException {
+	public Collection<Consignee> getConsignees(final String userid) throws ServiceException {
 		LOGGER.info("Getting list of consignees.");
-		Iterable<ConsigneeDetail> cutomersFromDb = consigneeRepo.findAll();
+
+		User user = userRepo.getUser(userid);
+
+		Iterable<ConsigneeDetail> cutomersFromDb = consigneeRepo.findAllByUser(user);
 		List<Consignee> consignees = new ArrayList<Consignee>();
 		LOGGER.info("Received " + Iterables.size(cutomersFromDb) + " cutomers from DB");
 		for (ConsigneeDetail consigneeDetail : cutomersFromDb) {

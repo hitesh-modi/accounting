@@ -14,4 +14,5 @@ export class UserModel {
   firmname: string;
   contactNumber: string;
   state: StateModel;
+  userAuthenticated?: boolean;
 }
