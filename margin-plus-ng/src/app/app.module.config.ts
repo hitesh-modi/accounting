@@ -9,9 +9,15 @@ export class AppModuleConfig {
 
   private BASE_URL = "http://localhost:8080"
   private INVOICES_REPORT = "/services/getInvoiceReport";
+  private PRODUCT_REPORT = "/services/getProducts";
 
-  getInvoiceReport(): string {
+  getInvoiceReportURL(): string {
     return this.BASE_URL + this.INVOICES_REPORT;
   }
+
+  getProductReportURL(): string {
+    return this.BASE_URL + this.PRODUCT_REPORT;
+  }
+
 
 }

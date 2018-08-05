@@ -14,6 +14,7 @@ import {InvoiceService} from "./app/invoice/service/invoice.service";
 import {ClarityModule, ClrFormsNextModule} from "@clr/angular";
 import {FormsModule} from "@angular/forms";
 import {DatePipe} from "@angular/common";
+import { ProductComponent } from './app/product/product.component';
 
 export function init_app(appInitService: AppInitializerService) {
   console.log("Initializing Data");
@@ -24,7 +25,8 @@ export function init_app(appInitService: AppInitializerService) {
   declarations: [
     AppComponent,
     InvoiceComponent,
-    HomeComponent
+    HomeComponent,
+    ProductComponent
   ],
   imports: [
     AppRoutingModule,
