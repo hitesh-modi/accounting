@@ -15,6 +15,11 @@ import {ClarityModule, ClrFormsNextModule} from "@clr/angular";
 import {FormsModule} from "@angular/forms";
 import {DatePipe} from "@angular/common";
 import { ProductComponent } from './app/product/product.component';
+import { ProductCreateComponent } from './app/product/product-create/product-create.component';
+import { ProductReportComponent } from './app/product/product-report/product-report.component';
+import { AccountingCodesComponent } from './app/product/accounting-codes/accounting-codes.component';
+import { ErrorComponent } from './app/shared/error/error.component';
+import { SuccessComponent } from './app/shared/success/success.component';
 
 export function init_app(appInitService: AppInitializerService) {
   console.log("Initializing Data");
@@ -26,7 +31,12 @@ export function init_app(appInitService: AppInitializerService) {
     AppComponent,
     InvoiceComponent,
     HomeComponent,
-    ProductComponent
+    ProductComponent,
+    ProductCreateComponent,
+    ProductReportComponent,
+    AccountingCodesComponent,
+    ErrorComponent,
+    SuccessComponent
   ],
   imports: [
     AppRoutingModule,

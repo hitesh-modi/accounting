@@ -23,6 +23,7 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.css",
               "node_modules/@clr/icons/clr-icons.css",
               "node_modules/@clr/ui/clr-ui.css",
               "src/styles.css"

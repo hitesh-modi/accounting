@@ -55,20 +55,13 @@ public class MainController {
     private IExpenseService expenseService;
 
 	@RequiresPermissions("create-product")
-	@PostMapping(value = "/createProduct", produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody String createProduct(@Valid @RequestBody String productJson, @Valid @RequestBody String userid) throws JsonProcessingException {
-		LOGGER.info("Request received for Product Creation with data " + productJson);
+	@PostMapping(value = "/createProduct", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody String createProduct(@RequestBody Product product, @RequestParam String userid) throws JsonProcessingException {
+		LOGGER.info("Request received for Product Creation with data " + product);
 		Long id = -1L;
 		try {
-			Product product = new ObjectMapper().readValue(productJson, Product.class);
 			id = mainService.saveProduct(product, userid);
 			LOGGER.info(product.toString());
-		} catch (JsonParseException e) {
-			LOGGER.info("JsonParseException during service call", e);
-		} catch (JsonMappingException e) {
-			LOGGER.info("JsonMappingException during service call", e);
-		} catch (IOException e) {
-			LOGGER.info("IOException during service call", e);
 		} catch (ServiceExcpetion e) {
 			LOGGER.info("ServiceExcpetion during service call", e);
 		}

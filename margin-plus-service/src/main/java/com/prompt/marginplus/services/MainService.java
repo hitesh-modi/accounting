@@ -71,7 +71,7 @@ public class MainService implements IMainService{
 	public long saveProduct(Product product, String userId) {
 		LOGGER.info("Saving Product");
 
-		User user = userRepo.findById(userId).get();
+		User user = userRepo.getUser(userId);
 
         Productdetail productDetail = new Productdetail();
 		if(product.getProductId() != 0) {
