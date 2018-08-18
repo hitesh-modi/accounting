@@ -17,6 +17,9 @@ export class AppModuleConfig {
   private SAC_GROUPS = "/services/getGroupsForHeading";
   private SAC_CODES = "/services/getSacsFromGroupId";
   private SUBMIT_PRODUCT = "/services/createProduct";
+  private GET_STATES = "/getStates";
+  private GET_CUSTOMERS= "/services/getCustomers";
+  private GET_CONSIGNEE = "/services/getConsignees";
 
   getInvoiceReportURL(): string {
     return this.BASE_URL + this.INVOICES_REPORT;
@@ -54,4 +57,15 @@ export class AppModuleConfig {
     return this.BASE_URL + this.SUBMIT_PRODUCT;
   }
 
+  getStatesURL(): string {
+    return this.BASE_URL + this.GET_STATES;
+  }
+
+  getCustomersURL(): string {
+    return this.BASE_URL + this.GET_CUSTOMERS;
+  }
+
+  getConsigneeURL(): string {
+    return this.BASE_URL + this.GET_CONSIGNEE;
+  }
 }

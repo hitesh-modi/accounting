@@ -20,6 +20,12 @@ import { ProductReportComponent } from './app/product/product-report/product-rep
 import { AccountingCodesComponent } from './app/product/accounting-codes/accounting-codes.component';
 import { ErrorComponent } from './app/shared/error/error.component';
 import { SuccessComponent } from './app/shared/success/success.component';
+import { InvoiceReportComponent } from './app/invoice/invoice-report/invoice-report.component';
+import { InvoiceCreateComponent } from './app/invoice/invoice-create/invoice-create.component';
+import { CustomerComponent } from './app/invoice/customer/customer.component';
+import { ConsigneeComponent } from './app/invoice/consignee/consignee.component';
+import { InvoiceWizardComponent } from './app/invoice/invoice-wizard/invoice-wizard.component';
+import {MatDatepickerModule, MatInputModule, MatNativeDateModule} from "@angular/material";
 
 export function init_app(appInitService: AppInitializerService) {
   console.log("Initializing Data");
@@ -36,7 +42,12 @@ export function init_app(appInitService: AppInitializerService) {
     ProductReportComponent,
     AccountingCodesComponent,
     ErrorComponent,
-    SuccessComponent
+    SuccessComponent,
+    InvoiceReportComponent,
+    InvoiceCreateComponent,
+    CustomerComponent,
+    ConsigneeComponent,
+    InvoiceWizardComponent
   ],
   imports: [
     AppRoutingModule,
@@ -44,7 +55,10 @@ export function init_app(appInitService: AppInitializerService) {
     BrowserModule,
     ClarityModule,
     ClrFormsNextModule,
-    FormsModule
+    FormsModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatInputModule
   ],
   providers: [AppInitializerService,
     AppModuleConfig,

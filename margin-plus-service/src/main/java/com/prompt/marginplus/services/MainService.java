@@ -86,13 +86,13 @@ public class MainService implements IMainService{
 		productDetail.setProductCompany(product.getCompany());
 		productDetail.setProductTaxRate(product.getTaxRate());
 		productDetail.setUser(user);
-		if(product.isGood()) {
+		if(product.getType().equalsIgnoreCase("Good")) {
 			HSN hsn = new HSN();
 			hsn.setHsnCode(product.getHsnCode());
 			productDetail.setProductServiceOrGood("G");
 			productDetail.setProductHSN(hsn);
 		}
-		else {
+		else if(product.getType().equalsIgnoreCase("Service")){
 			SacMaster sac = new SacMaster();
 			sac.setSacId(product.getHsnCode());
 			productDetail.setProductSac(sac);

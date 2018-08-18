@@ -55,7 +55,7 @@ export class ProductService {
   submitProduct(product, userid): Observable<any> {
     let httpParam: HttpParams = new HttpParams().set('userid', userid);
     let httpHeaders: HttpHeaders = new HttpHeaders().set('content-type', 'application/json');
-    return this.httpClient.post(this.appConfig.getSubmitProductURL(), {product: product}, {headers: httpHeaders, params: httpParam});
+    return this.httpClient.post(this.appConfig.getSubmitProductURL(), JSON.stringify(product), {headers: httpHeaders, params: httpParam});
   }
 
 }
