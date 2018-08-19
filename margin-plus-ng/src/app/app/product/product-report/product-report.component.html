@@ -1,0 +1,35 @@
+<div>
+  <button class="btn btn-sm btn-icon" [routerLink]="['../create']">
+    <clr-icon shape="plus"></clr-icon>
+    Create Product</button>
+</div>
+
+<clr-datagrid>
+  <clr-dg-column>Product Id</clr-dg-column>
+  <clr-dg-column>Product Type</clr-dg-column>
+  <clr-dg-column>Product Name</clr-dg-column>
+  <clr-dg-column>Product Company</clr-dg-column>
+  <clr-dg-column>HSN/SAC</clr-dg-column>
+  <clr-dg-column>Tax Rate</clr-dg-column>
+  <clr-dg-column>Good/Service</clr-dg-column>
+  <clr-dg-column>Accounting Code Desc</clr-dg-column>
+
+  <clr-dg-row *clrDgItems="let product of products">
+    <clr-dg-cell>{{product.productId}}</clr-dg-cell>
+    <clr-dg-cell>{{product.type}}</clr-dg-cell>
+    <clr-dg-cell>{{product.name}}</clr-dg-cell>
+    <clr-dg-cell>{{product.company}}</clr-dg-cell>
+    <clr-dg-cell>{{product.hsnCode}}</clr-dg-cell>
+    <clr-dg-cell>{{product.taxRate}}</clr-dg-cell>
+    <clr-dg-cell>{{product.good?"GOOD":"SERVICE"}}</clr-dg-cell>
+    <clr-dg-cell>{{product.accountingCodeDesc}}</clr-dg-cell>
+  </clr-dg-row>
+
+  <clr-dg-footer>
+    <clr-dg-pagination #pagination [clrDgPageSize]="10">
+      {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+      of {{pagination.totalItems}} invoices
+    </clr-dg-pagination>
+  </clr-dg-footer>
+
+</clr-datagrid>

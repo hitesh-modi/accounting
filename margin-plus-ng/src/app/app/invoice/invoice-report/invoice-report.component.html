@@ -1,0 +1,73 @@
+<div>
+  <button (click)="createInvoice = true" class="btn btn-sm btn-icon">
+    <clr-icon shape="plus"></clr-icon>
+    Create Invoice</button>
+</div>
+
+<div *ngIf="!showSearch"><button (click)="showSearch = true" class="btn btn-link"><clr-icon shape="plus"></clr-icon>Search Invoices</button></div>
+<div *ngIf="showSearch"><button (click)="showSearch = false" class="btn btn-link"><clr-icon shape="minus"></clr-icon>Search Invoices</button></div>
+
+<div class="clr-row" *ngIf="showSearch">
+  <div class="clr-col-12">
+    <form class="clr-form">
+      <div class="clr-form-control">
+        <label class="clr-control-label">From Date</label>
+        <div class="clr-control-container">
+          <div class="clr-input-wrapper">
+            <input type="date" id="fromDate" name="fromDate" [(ngModel)]="invoiceReportRequest.fromDate" clrDate>
+            <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+          </div>
+        </div>
+      </div>
+
+      <div class="clr-form-control">
+        <label class="clr-control-label">To Date</label>
+        <div class="clr-control-container">
+          <div class="clr-input-wrapper">
+            <input type="date" id="toDate" name="toDate" [(ngModel)]="invoiceReportRequest.toDate" clrDate>
+            <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+          </div>
+        </div>
+      </div>
+      <div class="clr-form-control"><button class="btn btn-sm btn-success" (click)="getInvoices()">Submit</button></div>
+
+
+    </form>
+  </div>
+</div>
+
+<clr-datagrid>
+  <clr-dg-column>Invoice Number</clr-dg-column>
+  <clr-dg-column>Customer Name</clr-dg-column>
+  <clr-dg-column>Consignee Name</clr-dg-column>
+  <clr-dg-column>Total Amount</clr-dg-column>
+  <clr-dg-column>Balance Amount</clr-dg-column>
+  <clr-dg-column>Invoice Date</clr-dg-column>
+  <clr-dg-column>Due Date</clr-dg-column>
+  <clr-dg-column>Actions</clr-dg-column>
+
+  <clr-dg-row *clrDgItems="let invoice of invoices">
+    <clr-dg-cell>{{invoice.invoiceNumber}}</clr-dg-cell>
+    <clr-dg-cell>{{invoice.customerName}}</clr-dg-cell>
+    <clr-dg-cell>{{invoice.consigneeName}}</clr-dg-cell>
+    <clr-dg-cell>{{invoice.invoiceAmount}}</clr-dg-cell>
+    <clr-dg-cell>{{invoice.balanceAmount}}</clr-dg-cell>
+    <clr-dg-cell>{{invoice.invoiceDate | date}}</clr-dg-cell>
+    <clr-dg-cell>{{invoice.invoiceDueDate | date}}</clr-dg-cell>
+    <clr-dg-cell>Actions</clr-dg-cell>
+  </clr-dg-row>
+
+  <clr-dg-footer>
+    <clr-dg-pagination #pagination [clrDgPageSize]="10">
+      {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+      of {{pagination.totalItems}} invoices
+    </clr-dg-pagination>
+  </clr-dg-footer>
+
+</clr-datagrid>
+
+<app-invoice-wizard
+  *ngIf="createInvoice"
+  (invoiceWizardClose)="createInvoice = $event"
+  [(invoiceWizardOpen)]="createInvoice">
+</app-invoice-wizard>
