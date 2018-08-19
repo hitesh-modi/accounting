@@ -4,8 +4,8 @@ import {InvoiceItem} from "./InvoiceItem";
 
 export class Invoice {
   public invoiceNumber: string;
-  public invoiceDate: string;
-  public invoiceDueDate: string;
+  public invoiceDate: Date;
+  public invoiceDueDate: Date;
   public customer: Customer;
   public consignee: Consignee;
   public invoiceItemDetails: Array<InvoiceItem>;
