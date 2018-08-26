@@ -1,4 +1,7 @@
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {
+  Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges,
+  ViewChild
+} from '@angular/core';
 import {Invoice} from "../model/Invoice";
 import {StateModel} from "../../../user/models/StateModel";
 import {StateService} from "../service/state.service";
@@ -26,6 +29,8 @@ export class InvoiceWizardComponent implements OnInit {
   @Output("invoiceWizardClose") wizardClose: EventEmitter<boolean> = new EventEmitter(false);
 
   @ViewChild("invoiceWizard") invoiceWizard: ClrWizard;
+
+  applicableTaxType: string = '';
 
   invoiceDateError: boolean = false;
 
@@ -84,6 +89,7 @@ export class InvoiceWizardComponent implements OnInit {
     );
   }
 
+
   fetchCustomers(): void {
     this.customerService.getCustomers(this.gds.userinfo.userid).subscribe(
       onloadeddata => {
@@ -141,6 +147,12 @@ export class InvoiceWizardComponent implements OnInit {
 
   getInvoiceItemPage() {
     this.getProducts();
+    if(this.customer.stateCode == this.consignee.stateCode) {
+      this.applicableTaxType = 'S-AND-C-GST';
+    }
+    else {
+      this.applicableTaxType = 'I-GST';
+    }
     this.invoiceWizard.next();
   }
 
@@ -150,6 +162,33 @@ export class InvoiceWizardComponent implements OnInit {
       this.fetchCustomers();
       this.invoiceWizard.next();
     }
+  }
+
+  getConsigneePage() {
+      this.fetchConsignee();
+      this.invoiceWizard.next();
+  }
+
+  toggleConsigeeOptions(option: string) {
+
+    if(option == 'new') {
+      this.consigneeOptions.newConsignee = true;
+      this.consigneeOptions.existingConsignee = false;
+      this.consigneeOptions.sameAsCustomer = false;
+      this.clearConsignee();
+    }
+    else if(option == 'existing') {
+      this.consigneeOptions.newConsignee = false;
+      this.consigneeOptions.existingConsignee = true;
+      this.consigneeOptions.sameAsCustomer = false;
+    }
+    else if(option == 'sameAsCustomer') {
+      this.consigneeOptions.newConsignee = false;
+      this.consigneeOptions.existingConsignee = false;
+      this.consigneeOptions.sameAsCustomer = true;
+      this.copyCustomerToConsignee();
+    }
+
   }
 
   validateInvoiceDates(): boolean {
@@ -214,10 +253,11 @@ export class InvoiceWizardComponent implements OnInit {
   }
 
 
-  calculateTotal() {
-    if(this.util.containsValue(this.tempInvoiceItem.quantity.toString()) &&
-      this.util.containsValue(this.tempInvoiceItem.rate.toString())) {
-      this.tempInvoiceItem.total = this.tempInvoiceItem.quantity * this.tempInvoiceItem.rate;
+  calculateTotal(newValue) {
+
+    if(this.util.containsValue(this.tempInvoiceItem.quantity) &&
+      this.util.containsValue(newValue)) {
+      this.tempInvoiceItem.total = this.tempInvoiceItem.quantity * +newValue;
     }
     else {
       this.tempInvoiceItem.total = 0;
@@ -225,14 +265,90 @@ export class InvoiceWizardComponent implements OnInit {
   }
 
 
+  setTaxRate() {
+    if(this.customer.stateCode == this.consignee.stateCode) {
+      this.tempInvoiceItem.cgstRate = this.tempInvoiceItem.product.taxRate / 2;
+      this.tempInvoiceItem.sgstRate = this.tempInvoiceItem.product.taxRate / 2;
+    } else {
+      this.tempInvoiceItem.igstRate = this.tempInvoiceItem.product.taxRate;
+    }
+
+    this.tempInvoiceItem.quantity = 0;
+    this.tempInvoiceItem.rate = 0;
+    this.tempInvoiceItem.unit = '';
+    this.tempInvoiceItem.total = 0;
+    this.tempInvoiceItem.discount = 0;
+    this.tempInvoiceItem.taxableValue = 0;
+    this.tempInvoiceItem.cgstAmount = 0;
+    this.tempInvoiceItem.sgstAmount = 0;
+    this.tempInvoiceItem.igstAmount = 0;
+
+  }
+
   calculateTaxableValue() {
-    if(this.util.containsValue(this.tempInvoiceItem.discount.toString()) &&
-    this.util.containsValue(this.tempInvoiceItem.total.toString())) {
+    if(this.util.containsValue(this.tempInvoiceItem.discount) &&
+    this.util.containsValue(this.tempInvoiceItem.total)) {
       this.tempInvoiceItem.taxableValue = this.tempInvoiceItem.total - this.tempInvoiceItem.discount;
     }
     else {
       this.tempInvoiceItem.taxableValue = this.tempInvoiceItem.total;
     }
+
+    this.calculateTaxes();
+  }
+
+  calculateTaxes() {
+
+    // TODO: Decouple the taxes calculation so that taxes other than GST can be accomodated easily
+
+    switch (this.applicableTaxType) {
+      case 'S-AND-C-GST':
+        if(this.util.containsValue(this.tempInvoiceItem.sgstRate) &&
+          this.util.containsValue(this.tempInvoiceItem.cgstRate) &&
+          this.util.containsValue(this.tempInvoiceItem.taxableValue)) {
+          this.tempInvoiceItem.cgstAmount = this.tempInvoiceItem.taxableValue * this.tempInvoiceItem.cgstRate / 100;
+          this.tempInvoiceItem.sgstAmount = this.tempInvoiceItem.taxableValue * this.tempInvoiceItem.sgstRate / 100;
+        }
+        break;
+      case 'I-GST':
+        if(this.util.containsValue(this.tempInvoiceItem.igstRate) &&
+          this.util.containsValue(this.tempInvoiceItem.taxableValue)) {
+          this.tempInvoiceItem.igstAmount = this.tempInvoiceItem.taxableValue * this.tempInvoiceItem.igstRate / 100;
+        }
+        break;
+    }
+
+  }
+
+  addItemToInvoice() {
+    this.invoiceItems.push(this.tempInvoiceItem);
+    this.tempInvoiceItem = new InvoiceItem();
+  }
+
+  isInvoiceFormValid(): boolean {
+    if(this.util.containsValue(this.tempInvoiceItem.product) &&
+      (this.util.containsValue(this.tempInvoiceItem.quantity) && (this.tempInvoiceItem.quantity > 0)) &&
+    this.util.containsValue(this.tempInvoiceItem.unit) &&
+      (this.util.containsValue(this.tempInvoiceItem.total) && this.tempInvoiceItem.total > 0)&&
+      (this.util.containsValue(this.tempInvoiceItem.rate) && this.tempInvoiceItem.rate > 0) &&
+      (this.util.containsValue(this.tempInvoiceItem.taxableValue) && this.tempInvoiceItem.taxableValue > 0)) {
+      if(this.applicableTaxType == 'S-AND-C-GST') {
+        if(
+          (this.util.containsValue(this.tempInvoiceItem.cgstRate) && this.tempInvoiceItem.cgstRate > 0)
+        && (this.util.containsValue(this.tempInvoiceItem.cgstAmount) && this.tempInvoiceItem.cgstAmount > 0)
+        && (this.util.containsValue(this.tempInvoiceItem.sgstAmount) && this.tempInvoiceItem.sgstAmount > 0)
+        && (this.util.containsValue(this.tempInvoiceItem.sgstRate) && this.tempInvoiceItem.sgstRate)) {
+          return true;
+        }
+      }
+      else if(this.applicableTaxType == 'I-GST') {
+        if(
+          (this.util.containsValue(this.tempInvoiceItem.igstAmount) && this.tempInvoiceItem.igstAmount) &&
+          (this.util.containsValue(this.tempInvoiceItem.igstRate) && this.tempInvoiceItem.igstRate))
+          return true;
+      }
+    }
+    return false;
   }
 
 }

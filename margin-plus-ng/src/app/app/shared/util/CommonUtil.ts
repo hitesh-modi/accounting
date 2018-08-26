@@ -6,16 +6,32 @@ import {isNullOrUndefined} from "util";
 })
 export class CommonUtil {
 
-  containsValue(stringValue: string): boolean {
-    console.log('Contains Value called for ', stringValue);
-    if(isNullOrUndefined(stringValue)) {
-      return false;
-    }
-    if(stringValue.trim().length > 0) {
-      return true;
-    }
-    else {
-      return false;
+  containsValue(value: any): boolean {
+
+    switch (typeof value) {
+      case 'string':
+        if(isNullOrUndefined(value)) {
+          return false;
+        }
+        if(value.trim().length > 0) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      case 'number':
+        if(isNullOrUndefined(value)) {
+          return false;
+        }
+        else
+          return true;
+      default: {
+        if(isNullOrUndefined(value)) {
+          return false;
+        }
+        else
+          return true;
+      }
     }
   }
 
