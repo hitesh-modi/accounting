@@ -64,6 +64,8 @@ export class InvoiceWizardComponent implements OnInit {
 
   showInvoiceDateError: boolean = false;
 
+  selectedInvoiceItems: Array<InvoiceItem> = new Array();
+
   consigneeOptions: any = {
     'newConsignee':true,
     'existingConsignee': false,
@@ -321,6 +323,7 @@ export class InvoiceWizardComponent implements OnInit {
   }
 
   addItemToInvoice() {
+    this.tempInvoiceItem.serialNumber = this.invoiceItems.length + 1;
     this.invoiceItems.push(this.tempInvoiceItem);
     this.tempInvoiceItem = new InvoiceItem();
   }
@@ -349,6 +352,21 @@ export class InvoiceWizardComponent implements OnInit {
       }
     }
     return false;
+  }
+
+  removeInvoiceItems() {
+     this.invoiceItems.forEach((item: InvoiceItem, index) => {
+       this.selectedInvoiceItems.forEach((itemToBeDeleted) => {
+         if(itemToBeDeleted.serialNumber == item.serialNumber) {
+           this.invoiceItems.splice(index, 1);
+         }
+       })
+     });
+  }
+
+  editInvoiceItem() {
+    this.tempInvoiceItem = this.selectedInvoiceItems[0];
+    this.removeInvoiceItems();
   }
 
 }

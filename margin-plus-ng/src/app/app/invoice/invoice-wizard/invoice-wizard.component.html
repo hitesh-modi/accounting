@@ -463,8 +463,15 @@
     </div>
 
     <div *ngIf="invoiceItems">
-      <clr-datagrid>
-        <clr-dg-column>Actions</clr-dg-column>
+      <clr-datagrid [(clrDgSelected)]="selectedInvoiceItems">
+
+        <clr-dg-action-bar>
+          <div class="btn-group">
+            <button (click)="removeInvoiceItems()" [disabled]="selectedInvoiceItems.length == 0" type="button" class="btn btn-sm btn-secondary" ><clr-icon shape="close"></clr-icon> Delete</button>
+            <button (click)="editInvoiceItem()" [disabled]="selectedInvoiceItems.length !== 1" type="button" class="btn btn-sm btn-secondary" ><clr-icon shape="pencil"></clr-icon> Edit</button>
+          </div>
+        </clr-dg-action-bar>
+
         <clr-dg-column>Product</clr-dg-column>
         <clr-dg-column>Quantity</clr-dg-column>
         <clr-dg-column>Rate</clr-dg-column>
@@ -475,21 +482,7 @@
         <clr-dg-column *ngIf="applicableTaxType =='I-GST'">IGST</clr-dg-column>
         <clr-dg-column>Discount</clr-dg-column>
 
-        <clr-dg-row *clrDgItems="let invoiceItem of invoiceItems">
-          <clr-dg-cell>
-            <div class="clr-row">
-              <div class="clr-col-md-6">
-                <button class="btn btn-sm btn-danger btn-icon">
-                  <clr-icon shape="times"></clr-icon>
-                </button>
-              </div>
-              <div class="clr-col-md-6">
-                <button class="btn btn-sm btn-primary btn-icon">
-                  <clr-icon shape="pencil"></clr-icon>
-                </button>
-              </div>
-            </div>
-          </clr-dg-cell>
+        <clr-dg-row *clrDgItems="let invoiceItem of invoiceItems" [clrDgItem]="invoiceItem">
           <clr-dg-cell>{{invoiceItem.product.name}}</clr-dg-cell>
           <clr-dg-cell>{{invoiceItem.quantity}}</clr-dg-cell>
           <clr-dg-cell>{{invoiceItem.rate}}</clr-dg-cell>
@@ -509,6 +502,7 @@
         </clr-dg-footer>
 
       </clr-datagrid>
+
     </div>
 
     <ng-template clrPageButtons>
