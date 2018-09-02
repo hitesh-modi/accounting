@@ -16,6 +16,7 @@ import {ProductService} from "../../product/service/product.service";
 import {ClrWizard} from "@clr/angular";
 import {CommonUtil} from "../../shared/util/CommonUtil";
 import {isNullOrUndefined} from "util";
+import {InvoiceService} from "../service/invoice.service";
 
 @Component({
   selector: 'app-invoice-wizard',
@@ -28,6 +29,10 @@ export class InvoiceWizardComponent implements OnInit {
 
   @Output("invoiceWizardClose") wizardClose: EventEmitter<boolean> = new EventEmitter(false);
 
+  @Output("invoiceCreationFinished") invoiceCreationFinished: EventEmitter<boolean> = new EventEmitter(false);
+
+  @Output("invoiceNumber") invoiceNumber: EventEmitter<string> = new EventEmitter(false);
+9
   @ViewChild("invoiceWizard") invoiceWizard: ClrWizard;
 
   applicableTaxType: string = '';
@@ -78,6 +83,7 @@ export class InvoiceWizardComponent implements OnInit {
     private gds: GlobalDataService,
     private consigneeService: ConsigneeService,
     private productService: ProductService,
+    private invoiceService: InvoiceService,
     private util: CommonUtil) { }
 
   ngOnInit() {
@@ -124,6 +130,7 @@ export class InvoiceWizardComponent implements OnInit {
       this.consignee.phoneNo = this.customer.phoneNo;
       this.consignee.email = this.customer.email;
       this.consignee.stateCode = this.customer.stateCode;
+      this.consignee.state = this.customer.state;
     }
   }
 
@@ -255,11 +262,11 @@ export class InvoiceWizardComponent implements OnInit {
   }
 
 
-  calculateTotal(newValue) {
+  calculateTotal() {
 
     if(this.util.containsValue(this.tempInvoiceItem.quantity) &&
-      this.util.containsValue(newValue)) {
-      this.tempInvoiceItem.total = this.tempInvoiceItem.quantity * +newValue;
+      this.util.containsValue(this.tempInvoiceItem.rate)) {
+      this.tempInvoiceItem.total = this.tempInvoiceItem.quantity * this.tempInvoiceItem.rate;
     }
     else {
       this.tempInvoiceItem.total = 0;
@@ -367,6 +374,60 @@ export class InvoiceWizardComponent implements OnInit {
   editInvoiceItem() {
     this.tempInvoiceItem = this.selectedInvoiceItems[0];
     this.removeInvoiceItems();
+  }
+
+
+  finalizeInvoice() {
+    this.invoice.customer = this.customer;
+    this.invoice.consignee = this.consignee;
+    this.invoice.invoiceItemDetails = this.invoiceItems;
+    this.invoice.grandTotal = this.calculateTotalForInvoice();
+    this.invoice.totalTax = this.calculateTotalTaxForInvoice();
+    this.invoice.netTotal = this.invoice.grandTotal + this.invoice.totalTax;
+    if(this.consigneeOptions.newConsignee) {
+      this.invoice.newConsignee = "true";
+    } else if(this.consigneeOptions.sameAsCustomer){
+      this.invoice.newConsignee = "SAME_AS_CUSTOMER";
+    } else if(this.consigneeOptions.existingConsignee) {
+      this.invoice.newConsignee = "false";
+    }
+    this.invoiceWizard.next();
+  }
+
+  private calculateTotalForInvoice(): number {
+    let total: number = 0;
+    this.invoiceItems.forEach((item: InvoiceItem) => {
+      total = total + item.taxableValue;
+    });
+    return total;
+  }
+
+  private calculateTotalTaxForInvoice(): number {
+    let total: number = 0;
+    this.invoiceItems.forEach((item: InvoiceItem) => {
+      if(this.applicableTaxType === 'S-AND-C-GST') {
+        total = total + item.sgstAmount + item.cgstAmount;
+      }
+      else if(this.applicableTaxType === 'I-GST') {
+        total = total + item.igstAmount;
+      }
+    });
+    return total;
+  }
+
+  createInvoice() {
+    this.invoiceCreationFinished.emit(true);
+    this.invoiceService.createInvoice(this.invoice, this.gds.userinfo.userid).subscribe(
+      data => {
+        this.invoiceNumber.emit(data);
+      },
+      error2 => {
+
+      },
+      () => {
+
+      }
+    );
   }
 
 }

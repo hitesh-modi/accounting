@@ -111,8 +111,6 @@
             </div>
           </div>
 
-          {{customer.stateCode}}
-
           <div class="form-group">
             <label class="clr-control-label">Customer GSTIN</label>
             <div class="clr-control-container" [ngClass]="{'clr-error':!util.isValidGstin(customer.gstin)}">
@@ -354,7 +352,7 @@
           &nbsp;
           <div class="clr-control-container" [ngClass]="{'clr-error':!util.containsValue(tempInvoiceItem.quantity)}">
             <div class="clr-input-wrapper">
-              <input size="7" clrInput placeholder="Quantity" name="quantity" [(ngModel)]="tempInvoiceItem.quantity">
+              <input size="7" clrInput placeholder="Quantity" (blur)="calculateTotal()" name="quantity" [(ngModel)]="tempInvoiceItem.quantity">
               <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
             </div>
             <span *ngIf="!util.containsValue(tempInvoiceItem.quantity)" class="clr-subtext">Quantity is Required!</span>
@@ -373,7 +371,7 @@
           <label class="clr-control-label required">Price Details</label>
           <div class="clr-control-container" [ngClass]="{'clr-error':!util.containsValue(tempInvoiceItem.rate)}">
             <div class="clr-input-wrapper">
-              <input size="7" clrInput (ngModelChange)="calculateTotal($event)" placeholder="Rate" name="rate" [(ngModel)]="tempInvoiceItem.rate">
+              <input size="7" clrInput (blur)="calculateTotal()" placeholder="Rate" name="rate" [(ngModel)]="tempInvoiceItem.rate">
               <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
             </div>
             <span *ngIf="!util.containsValue(tempInvoiceItem.rate)" class="clr-subtext">Rate is Required!</span>
@@ -466,10 +464,10 @@
       <clr-datagrid [(clrDgSelected)]="selectedInvoiceItems">
 
         <clr-dg-action-bar>
-          <div class="btn-group">
-            <button (click)="removeInvoiceItems()" [disabled]="selectedInvoiceItems.length == 0" type="button" class="btn btn-sm btn-secondary" ><clr-icon shape="close"></clr-icon> Delete</button>
-            <button (click)="editInvoiceItem()" [disabled]="selectedInvoiceItems.length !== 1" type="button" class="btn btn-sm btn-secondary" ><clr-icon shape="pencil"></clr-icon> Edit</button>
-          </div>
+              <div class="btn-group">
+                <button (click)="removeInvoiceItems()" [disabled]="selectedInvoiceItems.length == 0" type="button" class="btn btn-sm btn-secondary" ><clr-icon shape="close"></clr-icon> Delete</button>
+                <button (click)="editInvoiceItem()" [disabled]="selectedInvoiceItems.length !== 1" type="button" class="btn btn-sm btn-secondary" ><clr-icon shape="pencil"></clr-icon> Edit</button>
+              </div>
         </clr-dg-action-bar>
 
         <clr-dg-column>Product</clr-dg-column>
@@ -508,18 +506,106 @@
     <ng-template clrPageButtons>
       <clr-wizard-button (click)="closeWizard()" [type]="'cancel'">Cancel</clr-wizard-button>
       <clr-wizard-button [type]="'previous'">Previous</clr-wizard-button>
+      <clr-wizard-button
+        [clrWizardButtonDisabled]="invoiceItems.length == 0"
+        [type]="'custom-next'" (click)="finalizeInvoice()">Next
+      </clr-wizard-button>
     </ng-template>
   </clr-wizard-page>
 
 
-  <!-- Add Invoice Item Page -->
+  <!-- Summary of Invoice -->
   <clr-wizard-page>
-    <ng-template clrPageTitle>Summary Page</ng-template>
+    <ng-template clrPageTitle>Invoice Summary</ng-template>
+    <div class="clr-row">
+      <div class="clr-col-md-6">
+        <span style="font-weight: bold">Invoice Date: &nbsp;</span> {{invoice.invoiceDate | date}}
+      </div>
+      <div class="clr-col-md-6">
+        <span style="font-weight: bold">Invoice Due Date: &nbsp;</span> {{invoice.invoiceDueDate | date}}
+      </div>
+    </div>
+    <div class="clr-row">
+      <div class="clr-col-6">
+        <h4>Customer Information(Billed To)</h4>
+        <span style="font-weight: bold;">{{customer.name}}</span><br/>
+        <span>{{customer.address}}</span><br/>
+        <span>{{customer.state}} ({{customer.stateCode}})</span><br/>
+        <span>{{customer.gstin}}</span><br/>
+        <clr-icon shape="mobile" class="is-solid"></clr-icon><span>{{customer.mobileNo}}</span>&nbsp;
+        <clr-icon shape="phone-handset" class="is-solid"></clr-icon><span>{{customer.phoneNo}}</span><br/>
+        <clr-icon shape="envelope" class="is-solid"></clr-icon><span>{{customer.email}}</span>
+      </div>
+      <div class="clr-col-6">
+        <h4>Consignee Information(Shipped To)</h4>
+        <span style="font-weight: bold;">{{consignee.name}}</span><br/>
+        <span>{{consignee.address}}</span><br/>
+        <span>{{consignee.state}}({{consignee.stateCode}})</span><br/>
+        <span>{{consignee.gstin}}</span><br/>
+        <clr-icon shape="mobile" class="is-solid"></clr-icon><span>{{consignee.mobileNo}}</span>&nbsp;
+        <clr-icon shape="phone-handset" class="is-solid"></clr-icon><span>{{consignee.phoneNo}}</span><br/>
+        <clr-icon shape="envelope" class="is-solid"></clr-icon><span>{{consignee.email}}</span>
+      </div>
+    </div>
+
+    <div class="clr-row">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>S.No</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Rate</th>
+            <th>Total</th>
+            <th>Disc.</th>
+            <th>Taxable</th>
+            <th *ngIf="applicableTaxType=='S-AND-C-GST'">CGST</th>
+            <th *ngIf="applicableTaxType=='S-AND-C-GST'">SGST</th>
+            <th *ngIf="applicableTaxType=='I-GST'">IGST</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let invoiceSummItem of invoiceItems">
+            <td>{{invoiceSummItem.serialNumber}}</td>
+            <td>{{invoiceSummItem.product.name}}[{{invoiceSummItem.product.hsnCode}}]</td>
+            <td>{{invoiceSummItem.quantity}}</td>
+            <td>{{invoiceSummItem.rate}}</td>
+            <td>{{invoiceSummItem.total | currency:" "}}</td>
+            <td>{{invoiceSummItem.discount | currency:" "}}</td>
+            <td>{{invoiceSummItem.taxableValue | currency:" "}}</td>
+            <td *ngIf="applicableTaxType=='S-AND-C-GST'">{{invoiceSummItem.cgstAmount | currency:" "}} at {{invoiceSummItem.cgstRate}}%</td>
+            <td *ngIf="applicableTaxType=='S-AND-C-GST'">{{invoiceSummItem.sgstAmount | currency:" "}} at {{invoiceSummItem.sgstRate}}%</td>
+            <td *ngIf="applicableTaxType=='I-GST'">{{invoiceSummItem.igstAmount | currency:" "}} at {{invoiceSummItem.igstRate}}%</td>
+          </tr>
+        <tr>
+          <td colspan="4">
+            <span style="font-weight: bold">Total</span>
+          </td>
+          <td>
+
+          </td>
+          <td>
+
+          </td>
+          <td>
+            <span style="font-weight: bold">{{invoice.grandTotal | currency: " "}}</span>
+          </td>
+          <td colspan="2" *ngIf="applicableTaxType=='S-AND-C-GST'">
+            <span style="font-weight: bold">{{invoice.totalTax | currency: " "}}</span>
+          </td>
+          <td *ngIf="applicableTaxType=='I-GST'">
+            <span style="font-weight: bold">{{invoice.totalTax | currency: " "}}</span>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
 
     <ng-template clrPageButtons>
       <clr-wizard-button (click)="closeWizard()" [type]="'cancel'">Cancel</clr-wizard-button>
       <clr-wizard-button [type]="'previous'">Previous</clr-wizard-button>
-      <clr-wizard-button (click)="getNextPage()" [clrWizardButtonDisabled]="!sacCodeSelected" [type]="'finish'">Finish
+      <clr-wizard-button (click)="createInvoice()" [type]="'finish'">Finish
       </clr-wizard-button>
     </ng-template>
   </clr-wizard-page>

@@ -69,5 +69,23 @@
 <app-invoice-wizard
   *ngIf="createInvoice"
   (invoiceWizardClose)="createInvoice = $event"
+  (invoiceCreationFinished) = "showInvoiceCreationProgress($event)"
+  (invoiceNumber)="displayInvoiceNumber($event)"
   [(invoiceWizardOpen)]="createInvoice">
 </app-invoice-wizard>
+
+{{showInvoiceProgress}}
+
+<div *ngIf="showInvoiceProgress">
+  <div class="modal">
+    <div class="modal-dialog" role="dialog" aria-hidden="true">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div *ngIf="!showInvoiceNumber" class="progress loop"><progress></progress></div>
+          <div *ngIf="showInvoiceNumber">Invoice created with number {{createdInvoiceNumber}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop" aria-hidden="true"></div>
+</div>

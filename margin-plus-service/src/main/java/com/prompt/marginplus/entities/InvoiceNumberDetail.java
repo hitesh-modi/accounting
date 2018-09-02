@@ -3,13 +3,7 @@ package com.prompt.marginplus.entities;
 import java.io.Serializable;
 import java.sql.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 
 /**
@@ -32,6 +26,19 @@ public class InvoiceNumberDetail implements Serializable {
 	
 	@Column(name="sequenceno")
 	private int sequenceNo;
+
+	@ManyToOne
+	@JoinColumn(name="userid")
+	private User user;
+
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
 
 	public String getId() {
 		return id;

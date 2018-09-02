@@ -14,5 +14,5 @@ export class Invoice {
   public amountReceived: number;
   public netTotal: number;
   public newCustomer: boolean;
-  public newConsignee: boolean;
+  public newConsignee: string;
 }

@@ -22,6 +22,12 @@ export class InvoiceReportComponent implements OnInit {
 
   createInvoice: boolean;
 
+  showInvoiceProgress: boolean;
+
+  createdInvoiceNumber: string;
+
+  showInvoiceNumber: boolean;
+
   collapseIcon: string = "plus";
 
   ngOnInit() {
@@ -41,6 +47,15 @@ export class InvoiceReportComponent implements OnInit {
       this.showSearch = false;
     });
 
+  }
+
+  showInvoiceCreationProgress() {
+    this.showInvoiceProgress = true;
+  }
+
+  displayInvoiceNumber(invoiceNumber: string) {
+    this.createdInvoiceNumber = invoiceNumber;
+    this.showInvoiceNumber = true;
   }
 
 }
