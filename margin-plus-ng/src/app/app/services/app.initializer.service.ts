@@ -3,6 +3,7 @@ import {Injectable, isDevMode} from "@angular/core";
 import {UserService} from "../../user/service/user.service";
 import {GlobalDataService} from "../../user/service/global.data.service";
 import {UserModel} from "../../user/models/UserModel";
+import {StateModel} from "../../user/models/StateModel";
 
 @Injectable()
 export class AppInitializerService {
@@ -21,6 +22,11 @@ export class AppInitializerService {
           user.userAuthenticated = true;
           user.userName = 'Hitesh Modi';
           user.userid = 'er.hiteshmodi@gmail.com';
+
+          let state = new StateModel();
+          state.statecode = '23';
+          state.statename = 'Madhya Pradesh';
+          user.state = state;
           this.globalDataService.userinfo = user;
         }
         else {

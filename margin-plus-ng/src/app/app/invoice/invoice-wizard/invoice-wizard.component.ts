@@ -29,11 +29,11 @@ export class InvoiceWizardComponent implements OnInit {
 
   @Output("invoiceWizardClose") wizardClose: EventEmitter<boolean> = new EventEmitter(false);
 
-  @Output("invoiceCreationFinished") invoiceCreationFinished: EventEmitter<boolean> = new EventEmitter(false);
+  @Output("invoicePrepared") invoicePrepared: EventEmitter<Invoice> = new EventEmitter(false);
 
-  @Output("invoiceNumber") invoiceNumber: EventEmitter<string> = new EventEmitter(false);
-9
   @ViewChild("invoiceWizard") invoiceWizard: ClrWizard;
+
+  @ViewChild('addConsigneePage', { read: ElementRef }) public addConsigneePage: ElementRef<any>;
 
   applicableTaxType: string = '';
 
@@ -48,8 +48,6 @@ export class InvoiceWizardComponent implements OnInit {
   consignee: Consignee = new Consignee();
 
   newCustomer: boolean = true;
-
-  newConsignee: boolean = true;
 
   states: Array<StateModel> = new Array();
 
@@ -83,8 +81,8 @@ export class InvoiceWizardComponent implements OnInit {
     private gds: GlobalDataService,
     private consigneeService: ConsigneeService,
     private productService: ProductService,
-    private invoiceService: InvoiceService,
-    private util: CommonUtil) { }
+    private util: CommonUtil,
+    private elementRef: ElementRef) { }
 
   ngOnInit() {
     this.stateService.getStates().subscribe(
@@ -156,7 +154,7 @@ export class InvoiceWizardComponent implements OnInit {
 
   getInvoiceItemPage() {
     this.getProducts();
-    if(this.customer.stateCode == this.consignee.stateCode) {
+    if(this.gds.userinfo.state.statecode == this.consignee.stateCode) {
       this.applicableTaxType = 'S-AND-C-GST';
     }
     else {
@@ -264,18 +262,20 @@ export class InvoiceWizardComponent implements OnInit {
 
   calculateTotal() {
 
-    if(this.util.containsValue(this.tempInvoiceItem.quantity) &&
+    this.tempInvoiceItem.setTotal();
+
+    /*if(this.util.containsValue(this.tempInvoiceItem.quantity) &&
       this.util.containsValue(this.tempInvoiceItem.rate)) {
       this.tempInvoiceItem.total = this.tempInvoiceItem.quantity * this.tempInvoiceItem.rate;
     }
     else {
       this.tempInvoiceItem.total = 0;
-    }
+    }*/
   }
 
 
   setTaxRate() {
-    if(this.customer.stateCode == this.consignee.stateCode) {
+    if(this.gds.userinfo.state.statecode == this.consignee.stateCode) {
       this.tempInvoiceItem.cgstRate = this.tempInvoiceItem.product.taxRate / 2;
       this.tempInvoiceItem.sgstRate = this.tempInvoiceItem.product.taxRate / 2;
     } else {
@@ -294,39 +294,8 @@ export class InvoiceWizardComponent implements OnInit {
 
   }
 
-  calculateTaxableValue() {
-    if(this.util.containsValue(this.tempInvoiceItem.discount) &&
-    this.util.containsValue(this.tempInvoiceItem.total)) {
-      this.tempInvoiceItem.taxableValue = this.tempInvoiceItem.total - this.tempInvoiceItem.discount;
-    }
-    else {
-      this.tempInvoiceItem.taxableValue = this.tempInvoiceItem.total;
-    }
-
-    this.calculateTaxes();
-  }
-
-  calculateTaxes() {
-
-    // TODO: Decouple the taxes calculation so that taxes other than GST can be accomodated easily
-
-    switch (this.applicableTaxType) {
-      case 'S-AND-C-GST':
-        if(this.util.containsValue(this.tempInvoiceItem.sgstRate) &&
-          this.util.containsValue(this.tempInvoiceItem.cgstRate) &&
-          this.util.containsValue(this.tempInvoiceItem.taxableValue)) {
-          this.tempInvoiceItem.cgstAmount = this.tempInvoiceItem.taxableValue * this.tempInvoiceItem.cgstRate / 100;
-          this.tempInvoiceItem.sgstAmount = this.tempInvoiceItem.taxableValue * this.tempInvoiceItem.sgstRate / 100;
-        }
-        break;
-      case 'I-GST':
-        if(this.util.containsValue(this.tempInvoiceItem.igstRate) &&
-          this.util.containsValue(this.tempInvoiceItem.taxableValue)) {
-          this.tempInvoiceItem.igstAmount = this.tempInvoiceItem.taxableValue * this.tempInvoiceItem.igstRate / 100;
-        }
-        break;
-    }
-
+  setDiscount() {
+    this.tempInvoiceItem.setDiscount();
   }
 
   addItemToInvoice() {
@@ -416,18 +385,13 @@ export class InvoiceWizardComponent implements OnInit {
   }
 
   createInvoice() {
-    this.invoiceCreationFinished.emit(true);
-    this.invoiceService.createInvoice(this.invoice, this.gds.userinfo.userid).subscribe(
-      data => {
-        this.invoiceNumber.emit(data);
-      },
-      error2 => {
+    this.invoicePrepared.emit(this.invoice);
+    this.closeWizard();
+  }
 
-      },
-      () => {
-
-      }
-    );
+  scrollToTop() {
+      let element: Element = this.elementRef.nativeElement.querySelector('.modal-body');
+      element.scrollTop = 30;
   }
 
 }

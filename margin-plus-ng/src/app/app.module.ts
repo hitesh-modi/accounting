@@ -26,6 +26,8 @@ import { CustomerComponent } from './app/invoice/customer/customer.component';
 import { ConsigneeComponent } from './app/invoice/consignee/consignee.component';
 import { InvoiceWizardComponent } from './app/invoice/invoice-wizard/invoice-wizard.component';
 import {MatDatepickerModule, MatInputModule, MatNativeDateModule} from "@angular/material";
+import {HTTP_INTERCEPTORS} from "@angular/common/http";
+import {AppRequestInterceptor} from "./interceptor/http.interceptor";
 
 export function init_app(appInitService: AppInitializerService) {
   console.log("Initializing Data");
@@ -64,7 +66,8 @@ export function init_app(appInitService: AppInitializerService) {
     AppModuleConfig,
     InvoiceService,
     DatePipe,
-    { provide: APP_INITIALIZER, useFactory: init_app, deps: [AppInitializerService, UserService, GlobalDataService], multi: true }
+    { provide: APP_INITIALIZER, useFactory: init_app, deps: [AppInitializerService, UserService, GlobalDataService], multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: AppRequestInterceptor, multi: true}
   ],
   bootstrap: [AppComponent]
 })

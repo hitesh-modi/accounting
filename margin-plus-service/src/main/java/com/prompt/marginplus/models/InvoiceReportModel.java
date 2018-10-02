@@ -12,7 +12,7 @@ public class InvoiceReportModel {
 	
 	private String invoiceNumber;
 	
-	private String invoiceId;
+	private long invoiceId;
 	
 	private String customerName;
 	
@@ -32,7 +32,7 @@ public class InvoiceReportModel {
 		return invoiceNumber;
 	}
 
-	public String getInvoiceId() {
+	public long getInvoiceId() {
 		return invoiceId;
 	}
 
@@ -68,7 +68,7 @@ public class InvoiceReportModel {
 		this.invoiceNumber = invoiceNumber;
 	}
 
-	public void setInvoiceId(String invoiceId) {
+	public void setInvoiceId(long invoiceId) {
 		this.invoiceId = invoiceId;
 	}
 

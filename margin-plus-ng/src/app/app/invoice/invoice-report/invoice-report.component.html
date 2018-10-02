@@ -1,3 +1,6 @@
+
+<app-success [closable]="true" [successMessage]="invoiceCreationSuccessMessage" *ngIf="showInvoiceNumber"></app-success>
+
 <div>
   <button (click)="createInvoice = true" class="btn btn-sm btn-icon">
     <clr-icon shape="plus"></clr-icon>
@@ -69,12 +72,9 @@
 <app-invoice-wizard
   *ngIf="createInvoice"
   (invoiceWizardClose)="createInvoice = $event"
-  (invoiceCreationFinished) = "showInvoiceCreationProgress($event)"
-  (invoiceNumber)="displayInvoiceNumber($event)"
+  (invoicePrepared)="postInvoice($event)"
   [(invoiceWizardOpen)]="createInvoice">
 </app-invoice-wizard>
-
-{{showInvoiceProgress}}
 
 <div *ngIf="showInvoiceProgress">
   <div class="modal">
@@ -82,7 +82,6 @@
       <div class="modal-content">
         <div class="modal-body">
           <div *ngIf="!showInvoiceNumber" class="progress loop"><progress></progress></div>
-          <div *ngIf="showInvoiceNumber">Invoice created with number {{createdInvoiceNumber}}</div>
         </div>
       </div>
     </div>

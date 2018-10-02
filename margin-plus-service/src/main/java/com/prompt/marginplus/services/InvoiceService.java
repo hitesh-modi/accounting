@@ -5,10 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
@@ -120,6 +117,7 @@ public class InvoiceService implements IInvoiceService{
 
         Collection<InvoiceItem> invoiceItems = invoice.getInvoiceItemDetails();
         Invoicedetail invoiceEntity = createInvoiceEntity(invoice, consigneeEntity, customerEntity);
+        invoiceEntity.setUser(user);
 
         boolean isConsigneeInSameState = false;
         if(consigneeEntity.getState().getStatecode().equals(user.getState().getStatecode())) {
@@ -148,12 +146,17 @@ public class InvoiceService implements IInvoiceService{
 		String invoiceNumber = "";
 
 		Integer sequenceNo = invoiceNumberRepo.getInvoiceSequenceNumber(new java.sql.Date(Calendar.getInstance().getTimeInMillis()), user);
-		if(sequenceNo != null) {
-			invoiceNumber = Util.getInvoiceNumber(sequenceNo);
-		}
-		else {
-			invoiceNumber = Util.getInvoiceNumber(0);
-		}
+		if(sequenceNo == null)
+			sequenceNo = 0;
+		invoiceNumber = Util.getInvoiceNumber(sequenceNo);
+
+		InvoiceNumberDetail generatedNumber = new InvoiceNumberDetail();
+		generatedNumber.setInvoiceDate(new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
+		generatedNumber.setSequenceNo(sequenceNo+1);
+		generatedNumber.setUser(user);
+
+		invoiceNumberRepo.save(generatedNumber);
+
 		LOGGER.info("Generated invoice number : " + invoiceNumber);
 		return invoiceNumber;
 	}
@@ -228,6 +231,11 @@ public class InvoiceService implements IInvoiceService{
     
     private Collection<TaxItem> getAllTaxesForInvoiceItem(InvoiceItem invoiceItem, boolean isConsigneeInSameState) {
     	Collection<TaxItem> invoiceTaxes = invoiceItem.getAdditionalTaxes();
+
+    	if(invoiceTaxes == null) {
+    		invoiceTaxes = new ArrayList<>();
+		}
+
     	if(isConsigneeInSameState) {
             if((invoiceItem.getCgstRate() != null && invoiceItem.getCgstAmount() != null) &&
                     (!invoiceItem.getCgstRate().equals(BigDecimal.ZERO) && !invoiceItem.getCgstAmount().equals(BigDecimal.ZERO) )) {

@@ -1,11 +1,16 @@
-<clr-wizard [clrWizardClosable]="false" #invoiceWizard [(clrWizardOpen)]="wizardOpen">
+<clr-wizard
+  [clrWizardClosable]="false"
+  #invoiceWizard
+  [(clrWizardOpen)]="wizardOpen"
+  clrWizardSize="xl"
+  (clrWizardCurrentPageChanged)="scrollToTop()">
   <clr-wizard-title>Create Invoice</clr-wizard-title>
   <clr-wizard-button (click)="closeWizard()" [type]="'cancel'">Cancel</clr-wizard-button>
   <clr-wizard-button [type]="'next'">Next</clr-wizard-button>
   <clr-wizard-button (click)="closeWizard()" [type]="'finish'">Finish</clr-wizard-button>
 
   <!-- Invoice Date Page -->
-  <clr-wizard-page>
+  <clr-wizard-page id="invoiceDatePage">
     <ng-template clrPageTitle>Invoice Date</ng-template>
 
     <app-error [(closeErrorMessage)]="showInvoiceDateError" (refresh)="showInvoiceDateError = $event" [closable]="true" [errorMessage]="invoiceDateErrorMessage"></app-error>
@@ -53,129 +58,131 @@
   </clr-wizard-page>
 
   <!-- Add Customer Page -->
-  <clr-wizard-page>
+  <clr-wizard-page id="addCustomerPage">
     <ng-template clrPageTitle>Add Customer</ng-template>
 
     <div>
-      <div class="form-group">
-        <div class="radio-inline">
-          <input type="radio" (change)="newCustomer = true; clearCustomer()" [checked]="newCustomer" name="customerOption"
-                 id="newCustomer">
-          <label for="newCustomer">New Customer &nbsp;</label>
-        </div>
-        <div class="radio-inline">
-          <input type="radio" (change)="newCustomer = false" [checked]="!newCustomer" name="customerOption"
-                 id="existingCustomer">
-          <label for="existingCustomer">Existing Customer &nbsp;</label>
+      <div>
+        <div class="form-group">
+          <div class="radio-inline">
+            <input type="radio" (change)="newCustomer = true; clearCustomer()" [checked]="newCustomer" name="customerOption"
+                   id="newCustomer">
+            <label for="newCustomer">New Customer &nbsp;</label>
+          </div>
+          <div class="radio-inline">
+            <input type="radio" (change)="newCustomer = false" [checked]="!newCustomer" name="customerOption"
+                   id="existingCustomer">
+            <label for="existingCustomer">Existing Customer &nbsp;</label>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- New Customer Form -->
-    <div *ngIf="newCustomer">
-      <form class="clr-form clr-form-compact">
-        <section class="form-block">
-          <div class="form-group">
-            <label class="clr-control-label required">Customer Name</label>
-            <div class="clr-control-container" [ngClass]="{'clr-error':!util.containsValue(customer.name)}">
-              <div class="clr-input-wrapper">
-                <input clrInput type="text" id="customerName" name="customerName" [(ngModel)]="customer.name" required>
-                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+      <!-- New Customer Form -->
+      <div *ngIf="newCustomer">
+        <form class="clr-form clr-form-compact">
+          <section class="form-block">
+            <div class="form-group">
+              <label class="clr-control-label required">Customer Name</label>
+              <div class="clr-control-container" [ngClass]="{'clr-error':!util.containsValue(customer.name)}">
+                <div class="clr-input-wrapper">
+                  <input clrInput type="text" id="customerName" name="customerName" [(ngModel)]="customer.name" required>
+                  <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                </div>
+                <span *ngIf="!util.containsValue(customer.name)" class="clr-subtext">Customer Name is required!</span>
               </div>
-              <span *ngIf="!util.containsValue(customer.name)" class="clr-subtext">Customer Name is required!</span>
             </div>
-          </div>
 
-          <div class="form-group">
-            <label class="clr-control-label required">Customer Address</label>
-            <div class="clr-control-container" [ngClass]="{'clr-error':!util.containsValue(customer.address)}">
-              <div class="clr-textarea-wrapper">
+            <div class="form-group">
+              <label class="clr-control-label required">Customer Address</label>
+              <div class="clr-control-container" [ngClass]="{'clr-error':!util.containsValue(customer.address)}">
+                <div class="clr-textarea-wrapper">
                 <textarea cols="35" id="customerAddress" class="clr-textarea" name="customerAddress"
                           [(ngModel)]="customer.address"></textarea>
-                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                  <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                </div>
+                <span *ngIf="!util.containsValue(customer.address)" class="clr-subtext">Address is required!</span>
               </div>
-              <span *ngIf="!util.containsValue(customer.address)" class="clr-subtext">Address is required!</span>
             </div>
-          </div>
 
-          <div class="form-group">
-            <label class="clr-control-label required">Customer State</label>
-            <div class="clr-control-container" [ngClass]="{'clr-error':!util.containsValue(customer.stateCode)}">
+            <div class="form-group">
+              <label class="clr-control-label required">Customer State</label>
+              <div class="clr-control-container" [ngClass]="{'clr-error':!util.containsValue(customer.stateCode)}">
                 <div class="clr-select-wrapper">
                   <select type="text" class="clr-input" id="state" name="customerState" [(ngModel)]="customer.stateCode">
                     <option *ngFor="let state of states" value="{{state.statecode}}">{{state.statename}}</option>
                   </select>
                   <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
                 </div>
-              <span *ngIf="!util.containsValue(customer.stateCode)" class="clr-subtext">State is required!</span>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="clr-control-label">Customer GSTIN</label>
-            <div class="clr-control-container" [ngClass]="{'clr-error':!util.isValidGstin(customer.gstin)}">
-              <div class="clr-input-wrapper">
-                <input type="text" class="clr-input" id="custGstin" name="custGstin" [(ngModel)]="customer.gstin">
-                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
-              </div>
-              <span *ngIf="!util.isValidGstin(customer.gstin)" class="clr-subtext">Incorrect format for GSTIN. e.g. 22ABCDE1234F1Z8</span>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="clr-control-label">Contact Information</label>
-            <div class="clr-control-container">
-              <div class="clr-input-wrapper">
-                <input type="text" placeholder="Email" id="customerEmail" name="customerEmail" [(ngModel)]="customer.email"> &nbsp;
-                <input type="text" placeholder="Mobile No" id="customerMobileNumber" name="customerMobileNumber" [(ngModel)]="customer.mobileNo">&nbsp;
-                <input type="text" placeholder="Phone No" id="customerPhoneNumber" name="customerPhoneNumber" [(ngModel)]="customer.phoneNo">
+                <span *ngIf="!util.containsValue(customer.stateCode)" class="clr-subtext">State is required!</span>
               </div>
             </div>
-          </div>
 
-        </section>
+            <div class="form-group">
+              <label class="clr-control-label">Customer GSTIN</label>
+              <div class="clr-control-container" [ngClass]="{'clr-error':!util.isValidGstin(customer.gstin)}">
+                <div class="clr-input-wrapper">
+                  <input type="text" class="clr-input" id="custGstin" name="custGstin" [(ngModel)]="customer.gstin">
+                  <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                </div>
+                <span *ngIf="!util.isValidGstin(customer.gstin)" class="clr-subtext">Incorrect format for GSTIN. e.g. 22ABCDE1234F1Z8</span>
+              </div>
+            </div>
 
-      </form>
-    </div>
+            <div class="form-group">
+              <label class="clr-control-label">Contact Information</label>
+              <div class="clr-control-container">
+                <div class="clr-input-wrapper">
+                  <input type="text" placeholder="Email" id="customerEmail" name="customerEmail" [(ngModel)]="customer.email"> &nbsp;
+                  <input type="text" placeholder="Mobile No" id="customerMobileNumber" name="customerMobileNumber" [(ngModel)]="customer.mobileNo">&nbsp;
+                  <input type="text" placeholder="Phone No" id="customerPhoneNumber" name="customerPhoneNumber" [(ngModel)]="customer.phoneNo">
+                </div>
+              </div>
+            </div>
 
-    <!-- Existing Customer Grid -->
-    <div *ngIf="!newCustomer">
-      <clr-datagrid>
-        <clr-dg-column>Select</clr-dg-column>
-        <clr-dg-column>Name</clr-dg-column>
-        <clr-dg-column>Address</clr-dg-column>
-        <clr-dg-column>State</clr-dg-column>
-        <clr-dg-column>GSTIN</clr-dg-column>
-        <clr-dg-column>Email</clr-dg-column>
-        <clr-dg-column>Mobile#</clr-dg-column>
-        <clr-dg-column>Phone#</clr-dg-column>
+          </section>
 
-        <clr-dg-row *clrDgItems="let cust of customers">
-          <clr-dg-cell>
-            <button class="btn btn-sm btn-icon" *ngIf="customer.name != cust.name" (click)="customer = cust">
-              <clr-icon shape="plus"></clr-icon>
-            </button>
-            <button class="btn btn-sm btn-success btn-icon" *ngIf="customer.name == cust.name">
-              <clr-icon shape="check"></clr-icon>
-            </button>
-          </clr-dg-cell>
-          <clr-dg-cell>{{cust.name}}</clr-dg-cell>
-          <clr-dg-cell>{{cust.address}}</clr-dg-cell>
-          <clr-dg-cell>{{cust.state}}</clr-dg-cell>
-          <clr-dg-cell>{{cust.gstin}}</clr-dg-cell>
-          <clr-dg-cell>{{cust.email}}</clr-dg-cell>
-          <clr-dg-cell>{{cust.mobileNo}}</clr-dg-cell>
-          <clr-dg-cell>{{cust.phoneNo}}</clr-dg-cell>
-        </clr-dg-row>
+        </form>
+      </div>
 
-        <clr-dg-footer>
-          <clr-dg-pagination #pagination [clrDgPageSize]="10">
-            {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
-            of {{pagination.totalItems}} customers
-          </clr-dg-pagination>
-        </clr-dg-footer>
+      <!-- Existing Customer Grid -->
+      <div *ngIf="!newCustomer">
+        <clr-datagrid>
+          <clr-dg-column>Select</clr-dg-column>
+          <clr-dg-column>Name</clr-dg-column>
+          <clr-dg-column>Address</clr-dg-column>
+          <clr-dg-column>State</clr-dg-column>
+          <clr-dg-column>GSTIN</clr-dg-column>
+          <clr-dg-column>Email</clr-dg-column>
+          <clr-dg-column>Mobile#</clr-dg-column>
+          <clr-dg-column>Phone#</clr-dg-column>
 
-      </clr-datagrid>
+          <clr-dg-row *clrDgItems="let cust of customers">
+            <clr-dg-cell>
+              <button class="btn btn-sm btn-icon" *ngIf="customer.name != cust.name" (click)="customer = cust">
+                <clr-icon shape="plus"></clr-icon>
+              </button>
+              <button class="btn btn-sm btn-success btn-icon" *ngIf="customer.name == cust.name">
+                <clr-icon shape="check"></clr-icon>
+              </button>
+            </clr-dg-cell>
+            <clr-dg-cell>{{cust.name}}</clr-dg-cell>
+            <clr-dg-cell>{{cust.address}}</clr-dg-cell>
+            <clr-dg-cell>{{cust.state}}</clr-dg-cell>
+            <clr-dg-cell>{{cust.gstin}}</clr-dg-cell>
+            <clr-dg-cell>{{cust.email}}</clr-dg-cell>
+            <clr-dg-cell>{{cust.mobileNo}}</clr-dg-cell>
+            <clr-dg-cell>{{cust.phoneNo}}</clr-dg-cell>
+          </clr-dg-row>
+
+          <clr-dg-footer>
+            <clr-dg-pagination #pagination [clrDgPageSize]="10">
+              {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+              of {{pagination.totalItems}} customers
+            </clr-dg-pagination>
+          </clr-dg-footer>
+
+        </clr-datagrid>
+      </div>
     </div>
 
     <ng-template clrPageButtons>
@@ -190,134 +197,140 @@
   </clr-wizard-page>
 
   <!-- Add Consignee Page -->
-  <clr-wizard-page>
+  <clr-wizard-page id="addConsigneePage">
     <ng-template clrPageTitle>Add Consignee</ng-template>
 
-    <div>
-      <div class="form-group">
-        <div class="radio-inline">
-          <input type="radio" (change)="toggleConsigeeOptions('new')" [checked]="consigneeOptions.newConsignee" name="consigneeOption"
-                 id="newConsignee">
-          <label for="newConsignee">New Consignee &nbsp;</label>
-        </div>
-        <div class="radio-inline">
-          <input type="radio" (change)="toggleConsigeeOptions('existing')" [checked]="consigneeOptions.existingConsignee" name="consigneeOption"
-                 id="existingConsignee">
-          <label for="existingConsignee">Existing Consignee &nbsp;</label>
-        </div>
-        <div class="radio-inline">
-          <input type="radio" [checked] = "consigneeOptions.sameAsCustomer" (change)="toggleConsigeeOptions('sameAsCustomer')" name="consigneeOption"
-                 id="sameAsCustomer">
-          <label for="sameAsCustomer">Same as Customer</label>
-        </div>
-      </div>
-    </div>
+   <div>
+     <div id="consigneePage" #addConsigneePage>
+       <form class="clrForm clr-form-compact">
+         <section class="form-block">
+           <div class="form-group">
+             <div class="radio-inline">
+               <input type="radio" (change)="toggleConsigeeOptions('new')" [checked]="consigneeOptions.newConsignee" name="consigneeOption"
+                      id="newConsignee">
+               <label for="newConsignee">New Consignee &nbsp;</label>
+             </div>
+             <div class="radio-inline">
+               <input type="radio" (change)="toggleConsigeeOptions('existing')" [checked]="consigneeOptions.existingConsignee" name="consigneeOption"
+                      id="existingConsignee">
+               <label for="existingConsignee">Existing Consignee &nbsp;</label>
+             </div>
+             <div class="radio-inline">
+               <input type="radio" [checked] = "consigneeOptions.sameAsCustomer" (change)="toggleConsigeeOptions('sameAsCustomer')" name="consigneeOption"
+                      id="sameAsCustomer">
+               <label for="sameAsCustomer">Same as Customer</label>
+             </div>
+           </div>
+         </section>
+       </form>
+     </div>
 
-    <div *ngIf="!consigneeOptions.existingConsignee">
-      <form class="clr-form clr-form-compact">
-        <section class="form-block">
-          <div class="form-group">
-            <label class="clr-control-label required">Consignee Name</label>
-            <div class="clr-control-container" [ngClass]="{'clr-error':!util.containsValue(consignee.name)}">
-              <div class="clr-input-wrapper">
-                <input clrInput type="text" id="consigneeName" name="consigneeName" [(ngModel)]="consignee.name" required>
-                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
-              </div>
-              <span *ngIf="!util.containsValue(consignee.name)" class="clr-subtext">Consignee Name is required!</span>
-            </div>
-          </div>
+     <div *ngIf="!consigneeOptions.existingConsignee">
+       <form class="clr-form clr-form-compact">
+         <section class="form-block">
+           <div class="form-group">
+             <label class="clr-control-label required">Consignee Name</label>
+             <div class="clr-control-container" [ngClass]="{'clr-error':!util.containsValue(consignee.name)}">
+               <div class="clr-input-wrapper">
+                 <input clrInput type="text" id="consigneeName" name="consigneeName" [(ngModel)]="consignee.name" required>
+                 <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+               </div>
+               <span *ngIf="!util.containsValue(consignee.name)" class="clr-subtext">Consignee Name is required!</span>
+             </div>
+           </div>
 
-          <div class="form-group">
-            <label class="clr-control-label required">Consignee Address</label>
-            <div class="clr-control-container" [ngClass]="{'clr-error':!util.containsValue(consignee.address)}">
-              <div class="clr-textarea-wrapper">
+           <div class="form-group">
+             <label class="clr-control-label required">Consignee Address</label>
+             <div class="clr-control-container" [ngClass]="{'clr-error':!util.containsValue(consignee.address)}">
+               <div class="clr-textarea-wrapper">
                 <textarea cols="35" id="consigneeAddress" class="clr-textarea" name="consigneeAddress"
                           [(ngModel)]="consignee.address"></textarea>
-                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
-              </div>
-              <span *ngIf="!util.containsValue(consignee.address)" class="clr-subtext">Address is required!</span>
-            </div>
-          </div>
+                 <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+               </div>
+               <span *ngIf="!util.containsValue(consignee.address)" class="clr-subtext">Address is required!</span>
+             </div>
+           </div>
 
-          <div class="form-group">
-            <label class="clr-control-label required">Consignee State</label>
-            <div class="clr-control-container" [ngClass]="{'clr-error':!util.containsValue(consignee.stateCode)}">
-              <div class="clr-select-wrapper">
-                <select type="text" class="clr-input" id="conState" name="consigneeState" [(ngModel)]="consignee.stateCode">
-                  <option *ngFor="let state of states" value="{{state.statecode}}">{{state.statename}}</option>
-                </select>
-                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
-              </div>
-              <span *ngIf="!util.containsValue(consignee.stateCode)" class="clr-subtext">State is required!</span>
-            </div>
-          </div>
+           <div class="form-group">
+             <label class="clr-control-label required">Consignee State</label>
+             <div class="clr-control-container" [ngClass]="{'clr-error':!util.containsValue(consignee.stateCode)}">
+               <div class="clr-select-wrapper">
+                 <select type="text" class="clr-input" id="conState" name="consigneeState" [(ngModel)]="consignee.stateCode">
+                   <option *ngFor="let state of states" value="{{state.statecode}}">{{state.statename}}</option>
+                 </select>
+                 <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+               </div>
+               <span *ngIf="!util.containsValue(consignee.stateCode)" class="clr-subtext">State is required!</span>
+             </div>
+           </div>
 
-          <div class="form-group">
-            <label class="clr-control-label">Consignee GSTIN</label>
-            <div class="clr-control-container" [ngClass]="{'clr-error':!util.isValidGstin(consignee.gstin)}">
-              <div class="clr-input-wrapper">
-                <input type="text" class="clr-input" id="consGstin" name="consGstin" [(ngModel)]="consignee.gstin">
-                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
-              </div>
-              <span *ngIf="!util.isValidGstin(consignee.gstin)" class="clr-subtext">Incorrect format for GSTIN. e.g. 22ABCDE1234F1Z8</span>
-            </div>
-          </div>
+           <div class="form-group">
+             <label class="clr-control-label">Consignee GSTIN</label>
+             <div class="clr-control-container" [ngClass]="{'clr-error':!util.isValidGstin(consignee.gstin)}">
+               <div class="clr-input-wrapper">
+                 <input type="text" class="clr-input" id="consGstin" name="consGstin" [(ngModel)]="consignee.gstin">
+                 <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+               </div>
+               <span *ngIf="!util.isValidGstin(consignee.gstin)" class="clr-subtext">Incorrect format for GSTIN. e.g. 22ABCDE1234F1Z8</span>
+             </div>
+           </div>
 
-          <div class="form-group">
-            <label class="clr-control-label">Contact Information</label>
-            <div class="clr-control-container">
-              <div class="clr-input-wrapper">
-                <input type="text" placeholder="Email" id="consigneeEmail" name="consigneeEmail" [(ngModel)]="consignee.email"> &nbsp;
-                <input type="text" placeholder="Mobile No" id="consigneeMobileNumber" name="consigneeMobileNumber" [(ngModel)]="consignee.mobileNo">&nbsp;
-                <input type="text" placeholder="Phone No" id="consigneePhoneNumber" name="consigneePhoneNumber" [(ngModel)]="consignee.phoneNo">
-              </div>
-            </div>
-          </div>
+           <div class="form-group">
+             <label class="clr-control-label">Contact Information</label>
+             <div class="clr-control-container">
+               <div class="clr-input-wrapper">
+                 <input type="text" placeholder="Email" id="consigneeEmail" name="consigneeEmail" [(ngModel)]="consignee.email"> &nbsp;
+                 <input type="text" placeholder="Mobile No" id="consigneeMobileNumber" name="consigneeMobileNumber" [(ngModel)]="consignee.mobileNo">&nbsp;
+                 <input type="text" placeholder="Phone No" id="consigneePhoneNumber" name="consigneePhoneNumber" [(ngModel)]="consignee.phoneNo">
+               </div>
+             </div>
+           </div>
 
-        </section>
+         </section>
 
-      </form>
-    </div>
+       </form>
+     </div>
 
-    <!-- Existing Consignee Grid -->
-    <div *ngIf="consigneeOptions.existingConsignee">
-      <clr-datagrid>
-        <clr-dg-column>Select</clr-dg-column>
-        <clr-dg-column>Name</clr-dg-column>
-        <clr-dg-column>Address</clr-dg-column>
-        <clr-dg-column>State</clr-dg-column>
-        <clr-dg-column>GSTIN</clr-dg-column>
-        <clr-dg-column>Email</clr-dg-column>
-        <clr-dg-column>Mobile#</clr-dg-column>
-        <clr-dg-column>Phone#</clr-dg-column>
+     <!-- Existing Consignee Grid -->
+     <div *ngIf="consigneeOptions.existingConsignee">
+       <clr-datagrid>
+         <clr-dg-column>Select</clr-dg-column>
+         <clr-dg-column>Name</clr-dg-column>
+         <clr-dg-column>Address</clr-dg-column>
+         <clr-dg-column>State</clr-dg-column>
+         <clr-dg-column>GSTIN</clr-dg-column>
+         <clr-dg-column>Email</clr-dg-column>
+         <clr-dg-column>Mobile#</clr-dg-column>
+         <clr-dg-column>Phone#</clr-dg-column>
 
-        <clr-dg-row *clrDgItems="let cons of consignees">
-          <clr-dg-cell>
-            <button class="btn btn-sm btn-icon" *ngIf="consignee.name != cons.name" (click)="consignee = cons">
-              <clr-icon shape="plus"></clr-icon>
-            </button>
-            <button class="btn btn-sm btn-success btn-icon" *ngIf="consignee.name == cons.name">
-              <clr-icon shape="check"></clr-icon>
-            </button>
-          </clr-dg-cell>
-          <clr-dg-cell>{{cons.name}}</clr-dg-cell>
-          <clr-dg-cell>{{cons.address}}</clr-dg-cell>
-          <clr-dg-cell>{{cons.state}}</clr-dg-cell>
-          <clr-dg-cell>{{cons.gstin}}</clr-dg-cell>
-          <clr-dg-cell>{{cons.email}}</clr-dg-cell>
-          <clr-dg-cell>{{cons.mobileNo}}</clr-dg-cell>
-          <clr-dg-cell>{{cons.phoneNo}}</clr-dg-cell>
-        </clr-dg-row>
+         <clr-dg-row *clrDgItems="let cons of consignees">
+           <clr-dg-cell>
+             <button class="btn btn-sm btn-icon" *ngIf="consignee.name != cons.name" (click)="consignee = cons">
+               <clr-icon shape="plus"></clr-icon>
+             </button>
+             <button class="btn btn-sm btn-success btn-icon" *ngIf="consignee.name == cons.name">
+               <clr-icon shape="check"></clr-icon>
+             </button>
+           </clr-dg-cell>
+           <clr-dg-cell>{{cons.name}}</clr-dg-cell>
+           <clr-dg-cell>{{cons.address}}</clr-dg-cell>
+           <clr-dg-cell>{{cons.state}}</clr-dg-cell>
+           <clr-dg-cell>{{cons.gstin}}</clr-dg-cell>
+           <clr-dg-cell>{{cons.email}}</clr-dg-cell>
+           <clr-dg-cell>{{cons.mobileNo}}</clr-dg-cell>
+           <clr-dg-cell>{{cons.phoneNo}}</clr-dg-cell>
+         </clr-dg-row>
 
-        <clr-dg-footer>
-          <clr-dg-pagination #pagination [clrDgPageSize]="10">
-            {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
-            of {{pagination.totalItems}} consignees
-          </clr-dg-pagination>
-        </clr-dg-footer>
+         <clr-dg-footer>
+           <clr-dg-pagination #pagination [clrDgPageSize]="10">
+             {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+             of {{pagination.totalItems}} consignees
+           </clr-dg-pagination>
+         </clr-dg-footer>
 
-      </clr-datagrid>
-    </div>
+       </clr-datagrid>
+     </div>
+   </div>
 
     <ng-template clrPageButtons>
       <clr-wizard-button (click)="closeWizard()" [type]="'cancel'">Cancel</clr-wizard-button>
@@ -332,175 +345,177 @@
   </clr-wizard-page>
 
   <!-- Add Invoice Item Page -->
-  <clr-wizard-page>
+  <clr-wizard-page id="addInvoiceItemPage">
     <ng-template clrPageTitle>Add Invoice Items</ng-template>
 
     <div>
-      <form class="clr-form">
-        <div class="form-group">
-          <label class="clr-control-label required">Product</label>
-          <div class="clr-control-container" [ngClass]="{'clr-error':!util.containsValue(tempInvoiceItem.product)}">
-            <div class="clr-select-wrapper">
-              <select (change)="setTaxRate()" type="text" class="clr-input" id="product" name="product" [(ngModel)]="tempInvoiceItem.product">
-                <option *ngFor="let product of products" [ngValue]="product">{{product.name}}({{product.company}})</option>
-              </select>
-              <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
-            </div>
-            <span *ngIf="!util.containsValue(tempInvoiceItem.product)" class="clr-subtext">Product is Required!</span>
-            <span *ngIf="util.containsValue(tempInvoiceItem.product)" class="clr-subtext">Product</span>
-          </div>
-          &nbsp;
-          <div class="clr-control-container" [ngClass]="{'clr-error':!util.containsValue(tempInvoiceItem.quantity)}">
-            <div class="clr-input-wrapper">
-              <input size="7" clrInput placeholder="Quantity" (blur)="calculateTotal()" name="quantity" [(ngModel)]="tempInvoiceItem.quantity">
-              <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
-            </div>
-            <span *ngIf="!util.containsValue(tempInvoiceItem.quantity)" class="clr-subtext">Quantity is Required!</span>
-            <span *ngIf="util.containsValue(tempInvoiceItem.quantity)" class="clr-subtext">Quantity</span>
-          </div>
-          &nbsp;
-          <div class="clr-control-container">
-            <div class="clr-input-wrapper">
-              <input size="5" clrInput placeholder="Unit" name="unit" [(ngModel)]="tempInvoiceItem.unit">
-              <span class="clr-subtext">Units</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="clr-control-label required">Price Details</label>
-          <div class="clr-control-container" [ngClass]="{'clr-error':!util.containsValue(tempInvoiceItem.rate)}">
-            <div class="clr-input-wrapper">
-              <input size="7" clrInput (blur)="calculateTotal()" placeholder="Rate" name="rate" [(ngModel)]="tempInvoiceItem.rate">
-              <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
-            </div>
-            <span *ngIf="!util.containsValue(tempInvoiceItem.rate)" class="clr-subtext">Rate is Required!</span>
-            <span *ngIf="util.containsValue(tempInvoiceItem.rate)" class="clr-subtext">Rate</span>
-          </div>
-          &nbsp;
-          <div class="clr-control-container">
-            <div class="clr-input-wrapper">
-              <input size="10" disabled clrInput placeholder="Total" name="total" [(ngModel)]="tempInvoiceItem.total">
-              <span class="clr-subtext">Total</span>
-            </div>
-          </div>
-          &nbsp;
-          <div class="clr-control-container">
-            <div class="clr-input-wrapper">
-              <input size="5" clrInput placeholder="Discount" (blur)="calculateTaxableValue()" name="discount" [(ngModel)]="tempInvoiceItem.discount">
-              <span class="clr-subtext">Discount</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="clr-control-label required">Tax Details</label>
-          <div class="clr-control-container">
-            <div class="clr-input-wrapper">
-              <input size="10" disabled clrInput placeholder="Taxable Value" name="taxableValue" [(ngModel)]="tempInvoiceItem.taxableValue">
-            </div>
-            <span class="clr-subtext">Taxable Amount</span>
-          </div>
-
-          &nbsp;
-
-          <div *ngIf="applicableTaxType == 'S-AND-C-GST'">
-            <div class="clr-control-container" [ngClass]="{'clr-error': !util.containsValue(tempInvoiceItem.cgstRate)}">
-              <div class="clr-input-wrapper">
-                <input size="10" clrInput placeholder="CGST%" name="cgstRate" [(ngModel)]="tempInvoiceItem.cgstRate">
-                <clr-icon *ngIf="!util.containsValue(tempInvoiceItem.cgstRate)" class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+      <div>
+        <form class="clr-form">
+          <div class="form-group">
+            <label class="clr-control-label required">Product</label>
+            <div class="clr-control-container" [ngClass]="{'clr-error':!util.containsValue(tempInvoiceItem.product)}">
+              <div class="clr-select-wrapper">
+                <select (change)="setTaxRate()" type="text" class="clr-input" id="product" name="product" [(ngModel)]="tempInvoiceItem.product">
+                  <option *ngFor="let product of products" [ngValue]="product">{{product.name}}({{product.company}})</option>
+                </select>
+                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
               </div>
-              <span class="clr-subtext">CGST Rate</span>
-            </div>
-            <div class="clr-control-container">
-              <div class="clr-input-wrapper">
-                <input size="10" disabled clrInput placeholder="CGST Amount" name="cgstAmount" [(ngModel)]="tempInvoiceItem.cgstAmount">
-              </div>
-              <span class="clr-subtext">CGST Amount</span>
+              <span *ngIf="!util.containsValue(tempInvoiceItem.product)" class="clr-subtext">Product is Required!</span>
+              <span *ngIf="util.containsValue(tempInvoiceItem.product)" class="clr-subtext">Product</span>
             </div>
             &nbsp;
-            <div class="clr-control-container" [ngClass]="{'clr-error': !util.containsValue(tempInvoiceItem.sgstRate)}">
+            <div class="clr-control-container" [ngClass]="{'clr-error':!util.containsValue(tempInvoiceItem.quantity)}">
               <div class="clr-input-wrapper">
-                <input size="10" clrInput placeholder="SGST%" name="sgstRate" [(ngModel)]="tempInvoiceItem.sgstRate">
-                <clr-icon *ngIf="!util.containsValue(tempInvoiceItem.sgstRate)" class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                <input size="7" clrInput placeholder="Quantity" (blur)="calculateTotal()" name="quantity" [(ngModel)]="tempInvoiceItem.quantity">
+                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
               </div>
-              <span class="clr-subtext">SGST Rate</span>
+              <span *ngIf="!util.containsValue(tempInvoiceItem.quantity)" class="clr-subtext">Quantity is Required!</span>
+              <span *ngIf="util.containsValue(tempInvoiceItem.quantity)" class="clr-subtext">Quantity</span>
             </div>
+            &nbsp;
             <div class="clr-control-container">
               <div class="clr-input-wrapper">
-                <input size="10" disabled clrInput placeholder="SCGST Amount" name="sgstAmount" [(ngModel)]="tempInvoiceItem.sgstAmount">
+                <input size="5" clrInput placeholder="Unit" name="unit" [(ngModel)]="tempInvoiceItem.unit">
+                <span class="clr-subtext">Units</span>
               </div>
-              <span class="clr-subtext">SGST Amount</span>
             </div>
           </div>
 
-          <div *ngIf="applicableTaxType == 'I-GST'">
-            <div class="clr-control-container" [ngClass]="{'clr-error': !util.containsValue(tempInvoiceItem.igstRate)}">
+          <div class="form-group">
+            <label class="clr-control-label required">Price Details</label>
+            <div class="clr-control-container" [ngClass]="{'clr-error':!util.containsValue(tempInvoiceItem.rate)}">
               <div class="clr-input-wrapper">
-                <input size="10" clrInput placeholder="IGST%" name="igstRate" [(ngModel)]="tempInvoiceItem.igstRate">
-                <clr-icon *ngIf="!util.containsValue(tempInvoiceItem.igstRate)" class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                <input size="7" clrInput (blur)="calculateTotal()" placeholder="Rate" name="rate" [(ngModel)]="tempInvoiceItem.rate">
+                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
               </div>
-              <span class="clr-subtext">IGST Rate</span>
+              <span *ngIf="!util.containsValue(tempInvoiceItem.rate)" class="clr-subtext">Rate is Required!</span>
+              <span *ngIf="util.containsValue(tempInvoiceItem.rate)" class="clr-subtext">Rate</span>
             </div>
+            &nbsp;
             <div class="clr-control-container">
               <div class="clr-input-wrapper">
-                <input size="10" disabled clrInput placeholder="IGST Amount" name="igstAmount" [(ngModel)]="tempInvoiceItem.igstAmount">
+                <input size="10" disabled clrInput placeholder="Total" name="total" [(ngModel)]="tempInvoiceItem.total">
+                <span class="clr-subtext">Total</span>
               </div>
-              <span class="clr-subtext">IGST Amount</span>
+            </div>
+            &nbsp;
+            <div class="clr-control-container">
+              <div class="clr-input-wrapper">
+                <input size="5" clrInput placeholder="Discount" (blur)="setDiscount()" name="discount" [(ngModel)]="tempInvoiceItem.discount">
+                <span class="clr-subtext">Discount</span>
+              </div>
             </div>
           </div>
 
-          <div class="clr-control-container">
-            <button class="btn btn-sm btn-success" [disabled]="!isInvoiceFormValid()" (click)="addItemToInvoice()">Add Item</button>
+          <div class="form-group">
+            <label class="clr-control-label required">Tax Details</label>
+            <div class="clr-control-container">
+              <div class="clr-input-wrapper">
+                <input size="10" disabled clrInput placeholder="Taxable Value" name="taxableValue" [(ngModel)]="tempInvoiceItem.taxableValue">
+              </div>
+              <span class="clr-subtext">Taxable Amount</span>
+            </div>
+
+            &nbsp;
+
+            <div *ngIf="applicableTaxType == 'S-AND-C-GST'">
+              <div class="clr-control-container" [ngClass]="{'clr-error': !util.containsValue(tempInvoiceItem.cgstRate)}">
+                <div class="clr-input-wrapper">
+                  <input size="10" clrInput placeholder="CGST%" name="cgstRate" [(ngModel)]="tempInvoiceItem.cgstRate">
+                  <clr-icon *ngIf="!util.containsValue(tempInvoiceItem.cgstRate)" class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                </div>
+                <span class="clr-subtext">CGST Rate</span>
+              </div>
+              <div class="clr-control-container">
+                <div class="clr-input-wrapper">
+                  <input size="10" disabled clrInput placeholder="CGST Amount" name="cgstAmount" [(ngModel)]="tempInvoiceItem.cgstAmount">
+                </div>
+                <span class="clr-subtext">CGST Amount</span>
+              </div>
+              &nbsp;
+              <div class="clr-control-container" [ngClass]="{'clr-error': !util.containsValue(tempInvoiceItem.sgstRate)}">
+                <div class="clr-input-wrapper">
+                  <input size="10" clrInput placeholder="SGST%" name="sgstRate" [(ngModel)]="tempInvoiceItem.sgstRate">
+                  <clr-icon *ngIf="!util.containsValue(tempInvoiceItem.sgstRate)" class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                </div>
+                <span class="clr-subtext">SGST Rate</span>
+              </div>
+              <div class="clr-control-container">
+                <div class="clr-input-wrapper">
+                  <input size="10" disabled clrInput placeholder="SCGST Amount" name="sgstAmount" [(ngModel)]="tempInvoiceItem.sgstAmount">
+                </div>
+                <span class="clr-subtext">SGST Amount</span>
+              </div>
+            </div>
+
+            <div *ngIf="applicableTaxType == 'I-GST'">
+              <div class="clr-control-container" [ngClass]="{'clr-error': !util.containsValue(tempInvoiceItem.igstRate)}">
+                <div class="clr-input-wrapper">
+                  <input size="10" clrInput placeholder="IGST%" name="igstRate" [(ngModel)]="tempInvoiceItem.igstRate">
+                  <clr-icon *ngIf="!util.containsValue(tempInvoiceItem.igstRate)" class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                </div>
+                <span class="clr-subtext">IGST Rate</span>
+              </div>
+              <div class="clr-control-container">
+                <div class="clr-input-wrapper">
+                  <input size="10" disabled clrInput placeholder="IGST Amount" name="igstAmount" [(ngModel)]="tempInvoiceItem.igstAmount">
+                </div>
+                <span class="clr-subtext">IGST Amount</span>
+              </div>
+            </div>
+
+            <div class="clr-control-container">
+              <button class="btn btn-sm btn-success" [disabled]="!isInvoiceFormValid()" (click)="addItemToInvoice()">Add Item</button>
+            </div>
+
           </div>
 
-        </div>
 
+        </form>
+      </div>
 
-      </form>
-    </div>
+      <div *ngIf="invoiceItems">
+        <clr-datagrid [(clrDgSelected)]="selectedInvoiceItems">
 
-    <div *ngIf="invoiceItems">
-      <clr-datagrid [(clrDgSelected)]="selectedInvoiceItems">
+          <clr-dg-action-bar>
+            <div class="btn-group">
+              <button (click)="removeInvoiceItems()" [disabled]="selectedInvoiceItems.length == 0" type="button" class="btn btn-sm btn-secondary" ><clr-icon shape="close"></clr-icon> Delete</button>
+              <button (click)="editInvoiceItem()" [disabled]="selectedInvoiceItems.length !== 1" type="button" class="btn btn-sm btn-secondary" ><clr-icon shape="pencil"></clr-icon> Edit</button>
+            </div>
+          </clr-dg-action-bar>
 
-        <clr-dg-action-bar>
-              <div class="btn-group">
-                <button (click)="removeInvoiceItems()" [disabled]="selectedInvoiceItems.length == 0" type="button" class="btn btn-sm btn-secondary" ><clr-icon shape="close"></clr-icon> Delete</button>
-                <button (click)="editInvoiceItem()" [disabled]="selectedInvoiceItems.length !== 1" type="button" class="btn btn-sm btn-secondary" ><clr-icon shape="pencil"></clr-icon> Edit</button>
-              </div>
-        </clr-dg-action-bar>
+          <clr-dg-column>Product</clr-dg-column>
+          <clr-dg-column>Quantity</clr-dg-column>
+          <clr-dg-column>Rate</clr-dg-column>
+          <clr-dg-column>Total</clr-dg-column>
+          <clr-dg-column>Taxable Amount</clr-dg-column>
+          <clr-dg-column *ngIf="applicableTaxType =='S-AND-C-GST'">CGST</clr-dg-column>
+          <clr-dg-column *ngIf="applicableTaxType =='S-AND-C-GST'">SGST</clr-dg-column>
+          <clr-dg-column *ngIf="applicableTaxType =='I-GST'">IGST</clr-dg-column>
+          <clr-dg-column>Discount</clr-dg-column>
 
-        <clr-dg-column>Product</clr-dg-column>
-        <clr-dg-column>Quantity</clr-dg-column>
-        <clr-dg-column>Rate</clr-dg-column>
-        <clr-dg-column>Total</clr-dg-column>
-        <clr-dg-column>Taxable Amount</clr-dg-column>
-        <clr-dg-column *ngIf="applicableTaxType =='S-AND-C-GST'">CGST</clr-dg-column>
-        <clr-dg-column *ngIf="applicableTaxType =='S-AND-C-GST'">SGST</clr-dg-column>
-        <clr-dg-column *ngIf="applicableTaxType =='I-GST'">IGST</clr-dg-column>
-        <clr-dg-column>Discount</clr-dg-column>
+          <clr-dg-row *clrDgItems="let invoiceItem of invoiceItems" [clrDgItem]="invoiceItem">
+            <clr-dg-cell>{{invoiceItem.product.name}}</clr-dg-cell>
+            <clr-dg-cell>{{invoiceItem.quantity}}</clr-dg-cell>
+            <clr-dg-cell>{{invoiceItem.rate}}</clr-dg-cell>
+            <clr-dg-cell>{{invoiceItem.total}}</clr-dg-cell>
+            <clr-dg-cell>{{invoiceItem.taxableValue}}</clr-dg-cell>
+            <clr-dg-cell *ngIf="applicableTaxType =='S-AND-C-GST'">{{invoiceItem.cgstAmount}} at ({{invoiceItem.cgstRate}}%)</clr-dg-cell>
+            <clr-dg-cell *ngIf="applicableTaxType =='S-AND-C-GST'">{{invoiceItem.sgstAmount}} at ({{invoiceItem.sgstRate}}%)</clr-dg-cell>
+            <clr-dg-cell *ngIf="applicableTaxType =='I-GST'">{{invoiceItem.igstAmount}} at ({{invoiceItem.igstRate}}%)</clr-dg-cell>
+            <clr-dg-cell>{{invoiceItem.discount}}</clr-dg-cell>
+          </clr-dg-row>
 
-        <clr-dg-row *clrDgItems="let invoiceItem of invoiceItems" [clrDgItem]="invoiceItem">
-          <clr-dg-cell>{{invoiceItem.product.name}}</clr-dg-cell>
-          <clr-dg-cell>{{invoiceItem.quantity}}</clr-dg-cell>
-          <clr-dg-cell>{{invoiceItem.rate}}</clr-dg-cell>
-          <clr-dg-cell>{{invoiceItem.total}}</clr-dg-cell>
-          <clr-dg-cell>{{invoiceItem.taxableValue}}</clr-dg-cell>
-          <clr-dg-cell *ngIf="applicableTaxType =='S-AND-C-GST'">{{invoiceItem.cgstAmount}} at ({{invoiceItem.cgstRate}}%)</clr-dg-cell>
-          <clr-dg-cell *ngIf="applicableTaxType =='S-AND-C-GST'">{{invoiceItem.sgstAmount}} at ({{invoiceItem.sgstRate}}%)</clr-dg-cell>
-          <clr-dg-cell *ngIf="applicableTaxType =='I-GST'">{{invoiceItem.igstAmount}} at ({{invoiceItem.igstRate}}%)</clr-dg-cell>
-          <clr-dg-cell>{{invoiceItem.discount}}</clr-dg-cell>
-        </clr-dg-row>
+          <clr-dg-footer>
+            <clr-dg-pagination #pagination [clrDgPageSize]="10">
+              {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+              of {{pagination.totalItems}} invoice items
+            </clr-dg-pagination>
+          </clr-dg-footer>
 
-        <clr-dg-footer>
-          <clr-dg-pagination #pagination [clrDgPageSize]="10">
-            {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
-            of {{pagination.totalItems}} invoice items
-          </clr-dg-pagination>
-        </clr-dg-footer>
+        </clr-datagrid>
 
-      </clr-datagrid>
-
+      </div>
     </div>
 
     <ng-template clrPageButtons>
@@ -515,7 +530,7 @@
 
 
   <!-- Summary of Invoice -->
-  <clr-wizard-page>
+  <clr-wizard-page id="invoiceSummaryPage">
     <ng-template clrPageTitle>Invoice Summary</ng-template>
     <div class="clr-row">
       <div class="clr-col-md-6">

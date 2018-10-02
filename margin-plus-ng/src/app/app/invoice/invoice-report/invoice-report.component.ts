@@ -4,6 +4,7 @@ import {DatePipe} from "@angular/common";
 import {GlobalDataService} from "../../../user/service/global.data.service";
 import {InvoiceReportModel} from "../model/InvoiceReportModel";
 import {InvoiceReportRequest} from "../model/InvoiceReportRequest";
+import {Invoice} from "../model/Invoice";
 
 @Component({
   selector: 'app-invoice-report',
@@ -24,7 +25,7 @@ export class InvoiceReportComponent implements OnInit {
 
   showInvoiceProgress: boolean;
 
-  createdInvoiceNumber: string;
+  invoiceCreationSuccessMessage: string;
 
   showInvoiceNumber: boolean;
 
@@ -49,13 +50,25 @@ export class InvoiceReportComponent implements OnInit {
 
   }
 
-  showInvoiceCreationProgress() {
+  postInvoice(invoice: Invoice) {
+    console.log('Creating invoice', invoice);
+    this.createInvoice = false;
     this.showInvoiceProgress = true;
+    this.invoiceService.createInvoice(invoice, this.globalDataService.userinfo.userid).subscribe(
+      onloadeddata => {
+        this.showInvoiceProgress = false;
+        console.log('Invoice created successfully', onloadeddata);
+        this.invoiceCreationSuccessMessage = "Invoice created successfully "+onloadeddata.response;
+        this.showInvoiceNumber = true;
+      },
+      error2 => {
+        console.log("Error", error2);
+      },
+    ()=> {
+        console.log("Complete")
+    }
+    );
   }
 
-  displayInvoiceNumber(invoiceNumber: string) {
-    this.createdInvoiceNumber = invoiceNumber;
-    this.showInvoiceNumber = true;
-  }
 
 }

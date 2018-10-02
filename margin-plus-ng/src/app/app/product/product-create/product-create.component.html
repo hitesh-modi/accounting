@@ -7,11 +7,13 @@
       <section class="form-block">
         <div class="form-group">
           <label class="required">Product Type</label>
-          <select clrInput id="type" [(ngModel)]="product.type" name="type">
-            <option value="Good">Good</option>
-            <option value="Service">Service</option>
-            <option value="Other">Other</option>
-          </select>
+          <div class="clr-select-wrapper">
+            <select clrInput id="type" [(ngModel)]="product.type" name="type">
+              <option value="Good">Good</option>
+              <option value="Service">Service</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
 
         </div>
         <div class="form-group">

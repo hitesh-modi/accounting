@@ -8,7 +8,9 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -155,12 +157,13 @@ public class MainController {
     @ResponseBody
     @RequiresPermissions("rw-invoice")
     @PostMapping(value = "/createInvoice")
-    public String createInvoice(@Valid @RequestBody Invoice invoiceJson, @RequestParam String userId) {
+    public Map<String, String> createInvoice(@Valid @RequestBody Invoice invoiceJson, @RequestParam String userId) {
         LOGGER.info("Create Invoice received for " + invoiceJson);
         String invoiceNumber = "";
         //Invoice invoice = new ObjectMapper().readValue(invoiceJson, Invoice.class);
-        invoiceNumber = invoiceService.createInvoice(invoiceJson, userId);
-        return invoiceNumber;
+        //invoiceNumber = invoiceService.createInvoice(invoiceJson, userId);
+        LOGGER.info("Returning created invoice's number: "+invoiceNumber);
+        return Collections.singletonMap("response", "your string value");
     }
 
     @ResponseBody

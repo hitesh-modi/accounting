@@ -35,7 +35,7 @@ public class Invoicedetail implements Serializable {
 	@Id
 	@Column(name="id_invoiceid")
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private String ID_InvoiceId;
+	private long ID_InvoiceId;
 
 	@Column(name="id_creationtimestamp")
 	private Timestamp ID_CreationTimestamp;
@@ -98,11 +98,11 @@ public class Invoicedetail implements Serializable {
 		ID_InvoiceNumber = iD_InvoiceNumber;
 	}
 
-	public String getID_InvoiceId() {
+	public long getID_InvoiceId() {
 		return this.ID_InvoiceId;
 	}
 
-	public void setID_InvoiceId(String ID_InvoiceId) {
+	public void setID_InvoiceId(long ID_InvoiceId) {
 		this.ID_InvoiceId = ID_InvoiceId;
 	}
 
