@@ -65,7 +65,7 @@ export class InvoiceReportComponent implements OnInit {
         console.log("Error", error2);
       },
     ()=> {
-        console.log("Complete")
+        console.log("Complete");
     }
     );
   }

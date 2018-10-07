@@ -112,9 +112,6 @@ export class InvoiceWizardComponent implements OnInit {
     this.consigneeService.getConsignees(this.gds.userinfo.userid).subscribe(
       onloadeddata => {
         this.consignees = onloadeddata;
-      },
-      error2 => {
-
       }
     );
   }

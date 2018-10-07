@@ -9,6 +9,13 @@
   <clr-wizard-button [type]="'next'">Next</clr-wizard-button>
   <clr-wizard-button (click)="closeWizard()" [type]="'finish'">Finish</clr-wizard-button>
 
+  <app-error
+    [(closeErrorMessage)]="showInvoiceDateError"
+    (refresh)="showInvoiceDateError = $event"
+    [closable]="true"
+    [errorMessage]="invoiceDateErrorMessage">
+  </app-error>
+
   <!-- Invoice Date Page -->
   <clr-wizard-page id="invoiceDatePage">
     <ng-template clrPageTitle>Invoice Date</ng-template>
