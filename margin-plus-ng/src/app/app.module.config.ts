@@ -20,6 +20,7 @@ export class AppModuleConfig {
   private GET_STATES = "/getStates";
   private GET_CUSTOMERS= "/services/getCustomers";
   private GET_CONSIGNEE = "/services/getConsignees";
+  private CREATE_INVOICE = "/services/createInvoice";
 
   getInvoiceReportURL(): string {
     return this.BASE_URL + this.INVOICES_REPORT;
@@ -67,5 +68,9 @@ export class AppModuleConfig {
 
   getConsigneeURL(): string {
     return this.BASE_URL + this.GET_CONSIGNEE;
+  }
+
+  getCreateInvoiceURL(): string {
+    return this.BASE_URL + this.CREATE_INVOICE;
   }
 }

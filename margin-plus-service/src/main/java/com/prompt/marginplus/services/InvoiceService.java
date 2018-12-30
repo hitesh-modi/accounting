@@ -5,10 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
@@ -93,21 +90,24 @@ public class InvoiceService implements IInvoiceService{
 		LOGGER.info("Creating invoice " + invoice);
 		CustomerDetail customerEntity = null;
 		ConsigneeDetail consigneeEntity = null;
-		customerEntity = createCustomerEntity(invoice.getCustomer(), userid);
+
+		User user = userRepo.getUser(userid);
+
+		customerEntity = createCustomerEntity(invoice.getCustomer(), user);
 		if(invoice.isNewCustomer()) {
-			customerRepository.save(customerEntity);
+			//customerRepository.save(customerEntity);
 		}
 		
         if(invoice.getNewConsignee().equalsIgnoreCase("true")) {
-		    consigneeEntity = createConsigneeEntity(invoice.getConsignee(), userid);
-		    consigneeRepo.save(consigneeEntity);
+		    consigneeEntity = createConsigneeEntity(invoice.getConsignee(), user);
+		    //consigneeRepo.save(consigneeEntity);
         } else if(invoice.getNewConsignee().equalsIgnoreCase("SAME_AS_CUSTOMER")){
         	// Check if the Consignee with same name and contact details exists if yes then do not create a new consignee else create it.
         	Consignee consigneeModel = invoice.getConsignee();
         	ConsigneeDetail consigneeDetailFromDb = consigneeRepo.getConsigneeByNameAndMobileNumber(consigneeModel.getName(), consigneeModel.getMobileNo());
         	if(consigneeDetailFromDb == null) {
-        		consigneeEntity = createConsigneeEntity(invoice.getConsignee(), userid);
-        		consigneeRepo.save(consigneeEntity);
+        		consigneeEntity = createConsigneeEntity(invoice.getConsignee(), user);
+        		//consigneeRepo.save(consigneeEntity);
         	}
         	else
         		consigneeEntity = consigneeDetailFromDb;
@@ -117,9 +117,7 @@ public class InvoiceService implements IInvoiceService{
 
         Collection<InvoiceItem> invoiceItems = invoice.getInvoiceItemDetails();
         Invoicedetail invoiceEntity = createInvoiceEntity(invoice, consigneeEntity, customerEntity);
-
-        UserModel user = userService.getUserInfo();
-
+        invoiceEntity.setUser(user);
 
         boolean isConsigneeInSameState = false;
         if(consigneeEntity.getState().getStatecode().equals(user.getState().getStatecode())) {
@@ -133,20 +131,34 @@ public class InvoiceService implements IInvoiceService{
         	invoiceItemDetailsEntities.add(invoiceItemDetail);
         }
         invoiceEntity.setInvoiceitemdetails(invoiceItemDetailsEntities);
+
+        String invoiceNumber = generateInvoiceNumber(user);
+
+        invoiceEntity.setID_InvoiceNumber(invoiceNumber);
+
         invoiceRepo.save(invoiceEntity);
         
-        LOGGER.info("Invoice created successfully with id :" + invoiceEntity.getID_InvoiceId() + ", and Number: " + invoiceEntity.getID_InvoiceNumber());
-        Integer seqNum = invoiceNumberRepo.getInvoiceSequenceNumber(new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
-        InvoiceNumberDetail invoiceNumber = new InvoiceNumberDetail();
-        if(seqNum == null) {
-        	invoiceNumber.setInvoiceDate(new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
-        	invoiceNumber.setSequenceNo(1);
-        } else {
-        	invoiceNumber.setInvoiceDate(new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
-        	invoiceNumber.setSequenceNo(seqNum+1);
-        }
-        invoiceNumberRepo.save(invoiceNumber);
-        return invoiceEntity.getID_InvoiceId();
+        return invoiceNumber;
+	}
+
+	private String generateInvoiceNumber(final User user) {
+		LOGGER.info("Generating invoice number");
+		String invoiceNumber = "";
+
+		Integer sequenceNo = invoiceNumberRepo.getInvoiceSequenceNumber(new java.sql.Date(Calendar.getInstance().getTimeInMillis()), user);
+		if(sequenceNo == null)
+			sequenceNo = 0;
+		invoiceNumber = Util.getInvoiceNumber(sequenceNo);
+
+		InvoiceNumberDetail generatedNumber = new InvoiceNumberDetail();
+		generatedNumber.setInvoiceDate(new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
+		generatedNumber.setSequenceNo(sequenceNo+1);
+		generatedNumber.setUser(user);
+
+		invoiceNumberRepo.save(generatedNumber);
+
+		LOGGER.info("Generated invoice number : " + invoiceNumber);
+		return invoiceNumber;
 	}
 
 	private Invoicedetail createInvoiceEntity(Invoice invoice, ConsigneeDetail consigneeDetail, CustomerDetail customerDetail) {
@@ -167,9 +179,7 @@ public class InvoiceService implements IInvoiceService{
 	
 	
 	
-	private CustomerDetail createCustomerEntity(Customer customer, String user) {
-
-		User userEntity = userRepo.findById(user).get();
+	private CustomerDetail createCustomerEntity(Customer customer, User user) {
 
 	    CustomerDetail customerDetail = new CustomerDetail();
 	    customerDetail.setCdCustomerId(customer.getCustomerId());
@@ -179,16 +189,14 @@ public class InvoiceService implements IInvoiceService{
 	    customerDetail.setCdCustomerMobile(customer.getMobileNo());
 	    customerDetail.setCdCustomerEmail(customer.getEmail());
 	    customerDetail.setCdCustomerPhone(customer.getPhoneNo());
-	    customerDetail.setUser(userEntity);
+	    customerDetail.setUser(user);
 	    State state = stateRepo.findById(customer.getStateCode()).get();
 	    customerDetail.setState(state);
 	   
 	    return customerDetail;
     }
 
-    private ConsigneeDetail createConsigneeEntity(Consignee consignee, String user) {
-
-		User userEntity = userRepo.getUser(user);
+    private ConsigneeDetail createConsigneeEntity(Consignee consignee, User user) {
 
         ConsigneeDetail consigneeDetail = new ConsigneeDetail();
         consigneeDetail.setConsigneeName(consignee.getName());
@@ -197,7 +205,7 @@ public class InvoiceService implements IInvoiceService{
         consigneeDetail.setConsigneeEmail(consignee.getEmail());
         consigneeDetail.setConsigneeMobile(consignee.getMobileNo());
         consigneeDetail.setConsigneePhone(consignee.getPhoneNo());
-        consigneeDetail.setUser(userEntity);
+        consigneeDetail.setUser(user);
         State state = stateRepo.findById(consignee.getStateCode()).get();
         consigneeDetail.setState(state);
         return  consigneeDetail;
@@ -223,6 +231,11 @@ public class InvoiceService implements IInvoiceService{
     
     private Collection<TaxItem> getAllTaxesForInvoiceItem(InvoiceItem invoiceItem, boolean isConsigneeInSameState) {
     	Collection<TaxItem> invoiceTaxes = invoiceItem.getAdditionalTaxes();
+
+    	if(invoiceTaxes == null) {
+    		invoiceTaxes = new ArrayList<>();
+		}
+
     	if(isConsigneeInSameState) {
             if((invoiceItem.getCgstRate() != null && invoiceItem.getCgstAmount() != null) &&
                     (!invoiceItem.getCgstRate().equals(BigDecimal.ZERO) && !invoiceItem.getCgstAmount().equals(BigDecimal.ZERO) )) {

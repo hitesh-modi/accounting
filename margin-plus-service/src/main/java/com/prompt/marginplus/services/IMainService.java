@@ -16,8 +16,6 @@ public interface IMainService {
 
 	public Product getProduct(String productId, String userid) throws ServiceExcpetion;
 
-    public String generateInvoiceNumber()throws ServiceException;
-	
 	public Collection<Customer> getCustomers(String userid) throws ServiceException;
 
 	public Collection<Consignee> getConsignees(String userid) throws ServiceException;

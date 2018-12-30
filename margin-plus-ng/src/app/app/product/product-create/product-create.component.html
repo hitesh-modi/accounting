@@ -1,0 +1,53 @@
+<app-error [closable]="true" *ngIf="!success" [errorMessage]="'Failed to create product, please try again!'"></app-error>
+<app-success [closable]="true"  *ngIf="showSuccessMessage" [successMessage]="'Product created successfully, please check the product report.'"></app-success>
+
+<h3>Create Product</h3>
+
+<form clrForm class="clr-form">
+      <section class="form-block">
+        <div class="form-group">
+          <label class="required">Product Type</label>
+          <div class="clr-select-wrapper">
+            <select clrInput id="type" [(ngModel)]="product.type" name="type">
+              <option value="Good">Good</option>
+              <option value="Service">Service</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+        </div>
+        <div class="form-group">
+          <label class="required">Product Name</label>
+          <input clrInput type="text" placeholder="Name of the product" size="35" [(ngModel)]="product.name" name="name"/>
+        </div>
+        <div class="form-group">
+          <label class="required">Product Company</label>
+          <input clrInput type="text" placeholder="Company of the product" size="35" [(ngModel)]="product.company" name="company"/>
+        </div>
+        <div class="form-group">
+          <label class="required" *ngIf="product.type=='Good'">HSN</label>
+          <label class="required" *ngIf="product.type=='Service'">SAC</label>
+          <input clrInput type="text" disabled [(ngModel)]="product.hsnCode" size="35" placeholder="Accounting code for the product" name="hsnCode"/>
+          <button class="btn btn-primary btn-sm" (click)="showAccountingModal = true">
+            Get Code</button>
+        </div>
+
+        <div class="form-group">
+          <label>Tax Rate</label>
+          <input clrInput type="text" [(ngModel)]="product.taxRate" size="35" placeholder="Tax rate for this product" name="company"/>
+        </div>
+
+        <div class="form-group">
+          <button class="btn btn-success" [disabled]="checkProductForm()" (click)="submitProduct()">Submit</button>
+        </div>
+      </section>
+
+    </form>
+
+<app-accounting-codes
+  *ngIf="showAccountingModal"
+  (closeWizard)="showAccountingModal = $event"
+  (finishSelection)="product.hsnCode = $event"
+  [(wizardOpen)]="showAccountingModal"
+  [accontingType]="product.type">
+</app-accounting-codes>

@@ -1,0 +1,16 @@
+div.card-container {
+  width: auto;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  text-align: center;
+}
+
+div.header {
+  background-color: #313131;
+  color: white;
+  padding: 10px;
+}
+
+div.content {
+  text-align: left;
+  padding: 10px;
+}

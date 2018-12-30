@@ -1,0 +1,240 @@
+<!-- Wizard for HSN Codes -->
+
+<clr-wizard [clrWizardClosable]="false" *ngIf="accountingType == 'Good'" #accountingCodeWizard [(clrWizardOpen)]="wizardOpen">
+  <clr-wizard-title>Select accounting code for {{accountingType | uppercase}}</clr-wizard-title>
+  <clr-wizard-button (click)="closeWizard()" [type]="'cancel'">Cancel</clr-wizard-button>
+  <clr-wizard-button [type]="'next'">Next</clr-wizard-button>
+  <clr-wizard-button (click)="closeWizard()" [type]="'finish'">Finish</clr-wizard-button>
+
+  <clr-wizard-page>
+    <ng-template clrPageTitle>Select HSN Section</ng-template>
+    <div>
+      <clr-datagrid class="datagrid-compact">
+        <clr-dg-column>Select</clr-dg-column>
+        <clr-dg-column>Section Description
+          <clr-dg-string-filter [clrDgStringFilter]="sectionFilter"></clr-dg-string-filter>
+        </clr-dg-column>
+
+        <clr-dg-row *clrDgItems="let section of hsnSections; let i=index">
+          <clr-dg-cell>
+            <button class="btn btn-sm btn-icon" *ngIf="selectedHsnSection != section.sectionCode" (click)="setSelectedSection(section.sectionCode)">
+              <clr-icon shape="plus"></clr-icon>
+            </button>
+            <button class="btn btn-sm btn-success btn-icon" *ngIf="selectedHsnSection == section.sectionCode">
+              <clr-icon shape="check"></clr-icon>
+            </button>
+          </clr-dg-cell>
+          <clr-dg-cell>{{section.sectionDesc}}</clr-dg-cell>
+        </clr-dg-row>
+
+        <clr-dg-footer>
+          <clr-dg-pagination #pagination [clrDgPageSize]="10">
+            {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+            of {{pagination.totalItems}} sections
+          </clr-dg-pagination>
+        </clr-dg-footer>
+
+      </clr-datagrid>
+    </div>
+    <ng-template clrPageButtons>
+      <clr-wizard-button (click)="closeWizard()"  [type]="'cancel'">Cancel</clr-wizard-button>
+      <clr-wizard-button (clrWizardButtonClicked)="getChaptersPage()" [clrWizardButtonDisabled]="!hsnSectionSelected" [type]="'custom-next'">Next</clr-wizard-button>
+    </ng-template>
+  </clr-wizard-page>
+
+  <clr-wizard-page>
+    <ng-template clrPageTitle>Select HSN Chapter</ng-template>
+    <div>
+      <clr-datagrid class="datagrid-compact">
+        <clr-dg-column>Select</clr-dg-column>
+        <clr-dg-column>Chapter Description
+          <clr-dg-string-filter [clrDgStringFilter]="chapterFilter"></clr-dg-string-filter>
+        </clr-dg-column>
+        <clr-dg-row *clrDgItems="let chapter of hsnChapters; let i=index">
+          <clr-dg-cell>
+            <button class="btn btn-sm btn-icon" *ngIf="selectedHsnChapter != chapter.chapterId" (click)="setSelectedChapter(chapter.chapterId)">
+              <clr-icon shape="plus"></clr-icon>
+            </button>
+            <button class="btn btn-sm btn-success btn-icon" *ngIf="selectedHsnChapter == chapter.chapterId">
+              <clr-icon shape="check"></clr-icon>
+            </button>
+          </clr-dg-cell>
+          <clr-dg-cell>{{chapter.chapterDesc}}</clr-dg-cell>
+        </clr-dg-row>
+        <clr-dg-footer>
+          <clr-dg-pagination #pagination [clrDgPageSize]="10">
+            {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+            of {{pagination.totalItems}} chapters
+          </clr-dg-pagination>
+        </clr-dg-footer>
+      </clr-datagrid>
+    </div>
+
+    <ng-template clrPageButtons>
+      <clr-wizard-button (click)="closeWizard()" [type]="'cancel'">Cancel</clr-wizard-button>
+      <clr-wizard-button [type]="'previous'">Previous</clr-wizard-button>
+      <clr-wizard-button (clrWizardButtonClicked)="getHSNPage()" [clrWizardButtonDisabled]="!hsnChapterSelected" [type]="'custom-next'">Next</clr-wizard-button>
+    </ng-template>
+
+  </clr-wizard-page>
+
+  <clr-wizard-page>
+    <ng-template clrPageTitle>Select HSN Code</ng-template>
+    <div>
+      <clr-datagrid class="datagrid-compact">
+        <clr-dg-column>Select</clr-dg-column>
+        <clr-dg-column>HSN Code</clr-dg-column>
+        <clr-dg-column>Section Description
+          <clr-dg-string-filter [clrDgStringFilter]="hsnFilter"></clr-dg-string-filter>
+        </clr-dg-column>
+        <clr-dg-row *clrDgItems="let hsn of hsnCodes; let i=index">
+          <clr-dg-cell>
+            <button class="btn btn-sm btn-icon" *ngIf="selectedHsnCode != hsn.hsnCode" (click)="setSelectedHsn(hsn.hsnCode)">
+              <clr-icon shape="plus"></clr-icon>
+            </button>
+            <button class="btn btn-sm btn-success btn-icon" *ngIf="selectedHsnCode == hsn.hsnCode">
+              <clr-icon shape="check"></clr-icon>
+            </button>
+          </clr-dg-cell>
+          <clr-dg-cell>{{hsn.hsnCode}}</clr-dg-cell>
+          <clr-dg-cell>{{hsn.hsnDesc}}</clr-dg-cell>
+        </clr-dg-row>
+        <clr-dg-footer>
+          <clr-dg-pagination #pagination [clrDgPageSize]="10">
+            {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+            of {{pagination.totalItems}} hsn
+          </clr-dg-pagination>
+        </clr-dg-footer>
+      </clr-datagrid>
+    </div>
+
+    <ng-template clrPageButtons>
+      <clr-wizard-button (click)="closeWizard()" [type]="'cancel'">Cancel</clr-wizard-button>
+      <clr-wizard-button [type]="'previous'">Previous</clr-wizard-button>
+      <clr-wizard-button (click)="finishHSNSelection()" [clrWizardButtonDisabled]="!hsnCodeSelected" [type]="'finish'">Finish</clr-wizard-button>
+    </ng-template>
+  </clr-wizard-page>
+
+</clr-wizard>
+
+
+
+<!-- Wizard for Services Accounting Codes -->
+
+
+<clr-wizard [clrWizardClosable]="false" *ngIf="accountingType == 'Service'" #accountingCodeWizard [(clrWizardOpen)]="wizardOpen">
+  <clr-wizard-title>Select accounting code for {{accountingType | uppercase}}</clr-wizard-title>
+  <clr-wizard-button (click)="closeWizard()" [type]="'cancel'">Cancel</clr-wizard-button>
+  <clr-wizard-button [type]="'next'">Next</clr-wizard-button>
+  <clr-wizard-button (click)="closeWizard()" [type]="'finish'">Finish</clr-wizard-button>
+
+  <clr-wizard-page>
+    <ng-template clrPageTitle>Select SAC Heading</ng-template>
+    <div>
+      <clr-datagrid class="datagrid-compact">
+        <clr-dg-column>Select</clr-dg-column>
+        <clr-dg-column>Section Description
+          <clr-dg-string-filter [clrDgStringFilter]="headingFilter"></clr-dg-string-filter>
+        </clr-dg-column>
+
+        <clr-dg-row *clrDgItems="let heading of sacHeadings; let i=index">
+          <clr-dg-cell>
+            <button class="btn btn-sm btn-icon" *ngIf="selectedSacHeading != heading.headingCode" (click)="setSelectedHeading(heading.headingCode)">
+              <clr-icon shape="plus"></clr-icon>
+            </button>
+            <button class="btn btn-sm btn-success btn-icon" *ngIf="selectedSacHeading == heading.headingCode">
+              <clr-icon shape="check"></clr-icon>
+            </button>
+          </clr-dg-cell>
+          <clr-dg-cell>{{heading.headingDesc}}</clr-dg-cell>
+        </clr-dg-row>
+
+        <clr-dg-footer>
+          <clr-dg-pagination #pagination [clrDgPageSize]="10">
+            {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+            of {{pagination.totalItems}} headings
+          </clr-dg-pagination>
+        </clr-dg-footer>
+
+      </clr-datagrid>
+    </div>
+    <ng-template clrPageButtons>
+      <clr-wizard-button (click)="closeWizard()"  [type]="'cancel'">Cancel</clr-wizard-button>
+      <clr-wizard-button (clrWizardButtonClicked)="getGroupsPage()" [clrWizardButtonDisabled]="!sacHeadingSelected" [type]="'custom-next'">Next</clr-wizard-button>
+    </ng-template>
+  </clr-wizard-page>
+
+  <clr-wizard-page>
+    <ng-template clrPageTitle>Select SAC Group</ng-template>
+    <div>
+      <clr-datagrid class="datagrid-compact">
+        <clr-dg-column>Select</clr-dg-column>
+        <clr-dg-column>Group Description
+          <clr-dg-string-filter [clrDgStringFilter]="groupFilter"></clr-dg-string-filter>
+        </clr-dg-column>
+        <clr-dg-row *clrDgItems="let group of sacGroups; let i=index">
+          <clr-dg-cell>
+            <button class="btn btn-sm btn-icon" *ngIf="selectedSacGroup != group.groupCode" (click)="setSelectedGroup(group.groupCode)">
+              <clr-icon shape="plus"></clr-icon>
+            </button>
+            <button class="btn btn-sm btn-success btn-icon" *ngIf="selectedSacGroup == group.groupCode">
+              <clr-icon shape="check"></clr-icon>
+            </button>
+          </clr-dg-cell>
+          <clr-dg-cell>{{group.groupDesc}}</clr-dg-cell>
+        </clr-dg-row>
+        <clr-dg-footer>
+          <clr-dg-pagination #pagination [clrDgPageSize]="10">
+            {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+            of {{pagination.totalItems}} groups
+          </clr-dg-pagination>
+        </clr-dg-footer>
+      </clr-datagrid>
+    </div>
+
+    <ng-template clrPageButtons>
+      <clr-wizard-button (click)="closeWizard()" [type]="'cancel'">Cancel</clr-wizard-button>
+      <clr-wizard-button [type]="'previous'">Previous</clr-wizard-button>
+      <clr-wizard-button (clrWizardButtonClicked)="getSACPage()" [clrWizardButtonDisabled]="!sacGroupSelected" [type]="'custom-next'">Next</clr-wizard-button>
+    </ng-template>
+
+  </clr-wizard-page>
+
+  <clr-wizard-page>
+    <ng-template clrPageTitle>Select SAC Code</ng-template>
+    <div>
+      <clr-datagrid class="datagrid-compact">
+        <clr-dg-column>Select</clr-dg-column>
+        <clr-dg-column>HSN Code</clr-dg-column>
+        <clr-dg-column>Section Description
+          <clr-dg-string-filter [clrDgStringFilter]="sacFilter"></clr-dg-string-filter>
+        </clr-dg-column>
+        <clr-dg-row *clrDgItems="let sac of sacCodes; let i=index">
+          <clr-dg-cell>
+            <button class="btn btn-sm btn-icon" *ngIf="selectedSacCode != sac.sacCode" (click)="setSelectedCode(sac.sacCode)">
+              <clr-icon shape="plus"></clr-icon>
+            </button>
+            <button class="btn btn-sm btn-success btn-icon" *ngIf="selectedSacCode == sac.sacCode">
+              <clr-icon shape="check"></clr-icon>
+            </button>
+          </clr-dg-cell>
+          <clr-dg-cell>{{sac.sacCode}}</clr-dg-cell>
+          <clr-dg-cell>{{sac.sacDesc}}</clr-dg-cell>
+        </clr-dg-row>
+        <clr-dg-footer>
+          <clr-dg-pagination #pagination [clrDgPageSize]="10">
+            {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+            of {{pagination.totalItems}} sac
+          </clr-dg-pagination>
+        </clr-dg-footer>
+      </clr-datagrid>
+    </div>
+
+    <ng-template clrPageButtons>
+      <clr-wizard-button (click)="closeWizard()" [type]="'cancel'">Cancel</clr-wizard-button>
+      <clr-wizard-button [type]="'previous'">Previous</clr-wizard-button>
+      <clr-wizard-button (click)="finishSacSelection()" [clrWizardButtonDisabled]="!sacCodeSelected" [type]="'finish'">Finish</clr-wizard-button>
+    </ng-template>
+  </clr-wizard-page>
+
+</clr-wizard>

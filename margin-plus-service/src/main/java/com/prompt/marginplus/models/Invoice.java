@@ -17,7 +17,7 @@ public class Invoice {
 	private Collection<InvoiceItem> invoiceItemDetails;
 	private BigDecimal grandTotal;
 	private BigDecimal totalTax;
-	private BigDecimal amountReceived;
+	private BigDecimal amountReceived = BigDecimal.ZERO;
 	private BigDecimal netTotal;
 	private boolean newCustomer;
 	private String newConsignee;

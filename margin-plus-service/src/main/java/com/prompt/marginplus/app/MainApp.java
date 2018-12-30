@@ -9,10 +9,6 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-
-import java.net.URL;
-import java.net.URLClassLoader;
 
 @SpringBootApplication
 @EnableAutoConfiguration(exclude = {QuartzAutoConfiguration.class})

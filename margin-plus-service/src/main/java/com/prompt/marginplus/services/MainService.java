@@ -172,21 +172,6 @@ public class MainService implements IMainService{
 	}
 	
 	@Override
-	public String generateInvoiceNumber() {
-		LOGGER.info("Generating invoice number");
-		String invoiceNumber = "";
-		Integer sequenceNo = invoiceNumberRepo.getInvoiceSequenceNumber(new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
-		if(sequenceNo != null) {
-			invoiceNumber = Util.getInvoiceNumber(sequenceNo);
-		}
-		else {
-			invoiceNumber = Util.getInvoiceNumber(0);
-		}
-		LOGGER.info("Generated invoice number : " + invoiceNumber);
-		return invoiceNumber;
-	}
-
-	@Override
 	public Collection<Customer> getCustomers(final String userid) throws ServiceException {
 		LOGGER.info("Getting list of customers.");
 

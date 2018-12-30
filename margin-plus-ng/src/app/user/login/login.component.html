@@ -1,0 +1,42 @@
+<div class="modal">
+  <div class="modal-dialog" role="dialog" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button aria-label="Close" class="close" type="button" (click)="close()">
+          <clr-icon aria-hidden="true" shape="close"></clr-icon>
+        </button>
+        <h3 class="modal-title">Login</h3>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-danger" *ngIf="showError">
+          <div class="alert-items">
+            <div class="alert-item static">
+              <div class="alert-icon-wrapper">
+                <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
+              </div>
+              <span class="alert-text">
+                    Authentication Failed, Please check login credentials.
+                </span>
+            </div>
+          </div>
+        </div>
+
+        <form clrForm>
+          <div class="form-group">
+            <label>Username</label>
+            <input type="text" clrInput placeholder="Username" name="name" [(ngModel)]="user.userName"/>
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" clrInput placeholder="Password" name="name" [(ngModel)]="user.password"/>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" type="button" (click)="close()">Cancel</button>
+        <button class="btn btn-primary" type="button" (click)="login()">Login</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop" aria-hidden="true"></div>
