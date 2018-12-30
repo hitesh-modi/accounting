@@ -19,7 +19,7 @@ export class AppModuleConfig {
   private SUBMIT_PRODUCT = "/services/createProduct";
   private GET_STATES = "/getStates";
   private GET_CUSTOMERS= "/services/getCustomers";
-  private GET_CONSIGNEE = "/services/getConsigneess";
+  private GET_CONSIGNEE = "/services/getConsignees";
   private CREATE_INVOICE = "/services/createInvoice";
 
   getInvoiceReportURL(): string {

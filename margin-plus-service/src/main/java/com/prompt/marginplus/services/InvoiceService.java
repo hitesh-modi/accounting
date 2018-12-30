@@ -95,19 +95,19 @@ public class InvoiceService implements IInvoiceService{
 
 		customerEntity = createCustomerEntity(invoice.getCustomer(), user);
 		if(invoice.isNewCustomer()) {
-			customerRepository.save(customerEntity);
+			//customerRepository.save(customerEntity);
 		}
 		
         if(invoice.getNewConsignee().equalsIgnoreCase("true")) {
 		    consigneeEntity = createConsigneeEntity(invoice.getConsignee(), user);
-		    consigneeRepo.save(consigneeEntity);
+		    //consigneeRepo.save(consigneeEntity);
         } else if(invoice.getNewConsignee().equalsIgnoreCase("SAME_AS_CUSTOMER")){
         	// Check if the Consignee with same name and contact details exists if yes then do not create a new consignee else create it.
         	Consignee consigneeModel = invoice.getConsignee();
         	ConsigneeDetail consigneeDetailFromDb = consigneeRepo.getConsigneeByNameAndMobileNumber(consigneeModel.getName(), consigneeModel.getMobileNo());
         	if(consigneeDetailFromDb == null) {
         		consigneeEntity = createConsigneeEntity(invoice.getConsignee(), user);
-        		consigneeRepo.save(consigneeEntity);
+        		//consigneeRepo.save(consigneeEntity);
         	}
         	else
         		consigneeEntity = consigneeDetailFromDb;

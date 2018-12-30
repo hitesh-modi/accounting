@@ -78,12 +78,12 @@ public class Invoicedetail implements Serializable {
 	private Set<Invoiceitemdetail> invoiceitemdetails;
 
 	//bi-directional many-to-one association to CustomerDetail
-	@ManyToOne
+	@ManyToOne(cascade = {CascadeType.ALL})
 	@JoinColumn(name="id_customerid")
 	private CustomerDetail customerDetail;
 
 	//bi-directional many-to-one association to ConsigneeDetail
-	@ManyToOne
+	@ManyToOne(cascade = {CascadeType.ALL})
 	@JoinColumn(name="id_consigneeid")
 	private ConsigneeDetail consigneeDetail;
 

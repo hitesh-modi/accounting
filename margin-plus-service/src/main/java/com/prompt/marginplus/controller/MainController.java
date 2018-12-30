@@ -161,7 +161,7 @@ public class MainController {
         LOGGER.info("Create Invoice received for " + invoiceJson);
         String invoiceNumber = "";
         //Invoice invoice = new ObjectMapper().readValue(invoiceJson, Invoice.class);
-        //invoiceNumber = invoiceService.createInvoice(invoiceJson, userId);
+        invoiceNumber = invoiceService.createInvoice(invoiceJson, userId);
         LOGGER.info("Returning created invoice's number: "+invoiceNumber);
         return Collections.singletonMap("response", "your string value");
     }
