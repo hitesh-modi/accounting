@@ -2,7 +2,7 @@ package com.prompt.marginplus.models;
 
 public class Customer {
 	
-	private int customerId;
+	private long customerId;
 
 	private String name;
 	
@@ -85,11 +85,11 @@ public class Customer {
 	}
 	
 
-	public int getCustomerId() {
+	public long getCustomerId() {
 		return customerId;
 	}
 
-	public void setCustomerId(int customerId) {
+	public void setCustomerId(long customerId) {
 		this.customerId = customerId;
 	}
 

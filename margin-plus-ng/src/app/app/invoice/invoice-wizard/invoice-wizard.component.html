@@ -165,10 +165,10 @@
 
           <clr-dg-row *clrDgItems="let cust of customers">
             <clr-dg-cell>
-              <button class="btn btn-sm btn-icon" *ngIf="customer.name != cust.name" (click)="customer = cust">
+              <button class="btn btn-sm btn-icon" *ngIf="customer.customerId != cust.customerId" (click)="customer = cust">
                 <clr-icon shape="plus"></clr-icon>
               </button>
-              <button class="btn btn-sm btn-success btn-icon" *ngIf="customer.name == cust.name">
+              <button class="btn btn-sm btn-success btn-icon" *ngIf="customer.customerId == cust.customerId">
                 <clr-icon shape="check"></clr-icon>
               </button>
             </clr-dg-cell>

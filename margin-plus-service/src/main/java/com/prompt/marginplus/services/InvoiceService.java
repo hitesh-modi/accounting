@@ -182,6 +182,9 @@ public class InvoiceService implements IInvoiceService{
 	private CustomerDetail createCustomerEntity(Customer customer, User user) {
 
 	    CustomerDetail customerDetail = new CustomerDetail();
+	    if (customer.getCustomerId() > 0) {
+	    	return customerRepository.findById(new Long(customer.getCustomerId())).get();
+		}
 	    customerDetail.setCdCustomerId(customer.getCustomerId());
 	    customerDetail.setCdCustomerName(customer.getName());
 	    customerDetail.setCdCustomerAddress(customer.getAddress());

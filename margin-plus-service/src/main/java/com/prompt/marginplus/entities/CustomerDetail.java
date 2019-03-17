@@ -19,7 +19,7 @@ public class CustomerDetail implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name="CD_CUSTOMER_ID")
-	private int cdCustomerId;
+	private long cdCustomerId;
 
 	@Column(name="CD_CREATIONTIMESTAMP")
 	private Timestamp cdCreationtimestamp;
@@ -75,11 +75,11 @@ public class CustomerDetail implements Serializable {
 	public CustomerDetail() {
 	}
 
-	public int getCdCustomerId() {
+	public long getCdCustomerId() {
 		return this.cdCustomerId;
 	}
 
-	public void setCdCustomerId(int cdCustomerId) {
+	public void setCdCustomerId(long cdCustomerId) {
 		this.cdCustomerId = cdCustomerId;
 	}
 
